@@ -67,6 +67,20 @@ module.exports = class GameController {
   }
 
   /**
+   * Called when the host starts the game
+   * 
+   * Server will send `gameStateChanged` to all players in the lobby.
+   */
+  onStartGame(socket, params) {
+    // TODO: check if the socket is in a lobby
+
+    const lobby = socket.data.lobby;
+    lobby.startGame();
+
+    this.sendGameStateChanged(lobby.lobbyCode, lobby.game.getGameState());
+  }
+
+  /**
    * Called when a player tries to make a move.
    * 
    * Server will send `gameStateChanged` if the move is successful,
