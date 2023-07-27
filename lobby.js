@@ -1,4 +1,4 @@
-const Game = require("game");
+const Game = require("./game");
 
 module.exports = class Lobby {
   constructor(lobbyCode) {

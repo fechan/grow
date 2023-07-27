@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="index.css">
+  <title>Grow</title>
+</head>
+<body>
+  <main id="game">
+    <h1>Grow</h1>
+    <div id="board"></div>
+
+    <div id="menu-modal" class="modal">
+      <div class="modal-content">
+        <div id="main-menu" class="menu-screen">
+          <header><h2>Main menu</h2></header>
+          <section><button id="new-lobby">New game</button></section>
+          <section>
+            <label for="lobby-code">Enter a game code to join an existing lobby</label>
+            <input type="text" name="lobby-code" id="lobby-code-input">
+            <button id="join-game">-></button>
+          </section>
+        </div>
+
+        <div id="player-name" class="hidden menu-screen">
+          <header><h2>Create game</h2></header>
+          <section>
+            <label for="nickname">Your nickname</label>
+            <input type="text" name="nickname" id="nickname" placeholder="anonymous">
+
+            <button id="submit-nickname">Create game</button>
+          </section>
+        </div>
+
+        <div id="lobby" class="hidden menu-screen">
+          <header>
+            <button>Back</button>
+            <h2>Lobby</h2>
+          </header>
+
+          <section>
+            Lobby code
+            <span id="lobby-code"></span>
+          </section>
+          <section>
+            Players
+            <ul id="lobby-player-list">
+              <template class="player-template"><li class="player"></li></template>
+            </ul>
+          </section>
+          <section>
+            <button id="start-game" class="hidden">Start game</button>
+            <span id="waiting-for-host">Waiting for host to start the game...</span>
+          </section>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script type="module" src="grow.js"></script>
+</body>
+</html>

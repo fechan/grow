@@ -1,3 +1,4 @@
+const Lobby = require("./lobby");
 const crypto = require("crypto");
 
 module.exports = class GameController {
@@ -18,7 +19,7 @@ module.exports = class GameController {
   }
 
   /**
-   * Called when a player joins a lobby.
+   * Called when a player joins a lobby with `joinLobby`.
    * 
    * Server will send `lobbyInfoChanged` to everyone already in the lobby
    * and `lobbyJoined` to the new player.
@@ -29,7 +30,7 @@ module.exports = class GameController {
     const lobbyToJoin = params.lobby.toUpperCase();
     const lobby = this.lobbies[lobbyToJoin];
 
-    const playerName = lobby.addPlayer(params.name);
+    const playerName = lobby.addPlayer(params.playerName);
     const lobbyInfo = lobby.getLobbyInfo();
 
     this.sendLobbyInfoChanged(lobbyInfo);
@@ -44,9 +45,9 @@ module.exports = class GameController {
   }
 
   /**
-   * Called when a player creates a lobby.
+   * Called when a player creates a lobby with `createLobby`.
    * 
-   * Server will send `gameJoined` to the new player, who is made the host.
+   * Server will send `lobbyJoined` to the new player, who is made the host.
    * @param {String} params.hostPlayerName Name of player who created the lobby
    */
   onCreateLobby(socket, params) {
@@ -55,7 +56,7 @@ module.exports = class GameController {
     this.lobbies[newLobbyCode] = newLobby;
 
     const hostPlayerName = newLobby.addPlayer(params.hostPlayerName);
-    const roomInfo = newLobby.getLobbyInfo();
+    const lobbyInfo = newLobby.getLobbyInfo();
 
     socket.data.playerName = hostPlayerName;
     socket.data.lobby = newLobby;
@@ -67,7 +68,7 @@ module.exports = class GameController {
   }
 
   /**
-   * Called when the host starts the game
+   * Called when the host starts the game with `startGame`
    * 
    * Server will send `gameStateChanged` to all players in the lobby.
    */
@@ -107,6 +108,14 @@ module.exports = class GameController {
       this.sendError(socket, "illegalMove", "You tried to make an illegal move!");
     }
   }
+
+  /**
+   * Called when a client disconnects
+   */
+  onDisconnect(socket, params) {
+    console.log("Client disconnected");
+  }
+
 
   /**
    * Send the game state to players in the lobby
