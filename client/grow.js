@@ -1,7 +1,8 @@
-import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+import * as game from "./game.js"
 
 function init() {
   let myName;
+  game.update(game.emptyGameState(15));
 
   let socket = io();
 
@@ -16,6 +17,12 @@ function init() {
   socket.on("lobbyInfoChanged", params => {
     let { lobbyInfo } = params;
     updateLobbyScreen(lobbyInfo, myName);
+  });
+
+  socket.on("gameStateChanged", params => {
+    let { gameState } = params;
+    game.update(gameState);
+    document.getElementById("menu-modal").classList.add("hidden");
   });
 
   document.getElementById("new-lobby").addEventListener("click", () => {

@@ -10,7 +10,19 @@
 <body>
   <main id="game">
     <h1>Grow</h1>
-    <div id="board"></div>
+    <div id="game">
+      <ol id="player-scores">
+        <template class="player-template">
+          <li class="player">
+            <span class="name"></span>
+            (<span class="color"></span>)
+            Score: <span class="score"></span>
+          </li>
+        </template>
+      </ol>
+      <button id="end-turn" disabled>End turn</button>
+      <svg id="board" width="770" height="770"></svg>
+    </div>
 
     <div id="menu-modal" class="modal">
       <div class="modal-content">
@@ -46,9 +58,9 @@
           </section>
           <section>
             Players
-            <ul id="lobby-player-list">
+            <ol id="lobby-player-list">
               <template class="player-template"><li class="player"></li></template>
-            </ul>
+            </ol>
           </section>
           <section>
             <button id="start-game" class="hidden">Start game</button>

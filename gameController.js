@@ -37,7 +37,7 @@ module.exports = class GameController {
 
     socket.data.playerName = playerName;
     socket.data.lobby = lobby;
-    socket.join(lobby.roomCode);
+    socket.join(lobby.lobbyCode);
 
     console.info(`Player ${params.playerName} joined lobby ${lobby.lobbyCode}`);
 

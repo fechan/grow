@@ -25,3 +25,8 @@ body {
 .hidden {
   display: none;
 }
+
+#game {
+  display: flex;
+  flex-direction: column;
+}

@@ -60,7 +60,7 @@ module.exports = class GrowGame {
         target = this.board[target_x][target_y];
         if (target === null && !this.playerHasPlaced) {
           if (!dry_run) {
-            this.board[target_x][target_y] = {player: player, heads: 1, movable: 0};
+            this.board[target_x][target_y] = {player: player, heads: 1, movable: 0, x: target_x, y: target_y};
             this.openSpaces--;
             this.playerHasPlaced = true;
           }
@@ -81,7 +81,7 @@ module.exports = class GrowGame {
             source.movable--;
             source.heads--;
             if (target === null) {
-              this.board[target_x][target_y] = {player: player, heads: 1, movable: 0};
+              this.board[target_x][target_y] = {player: player, heads: 1, movable: 0, x: target_x, y: target_y};
             } else {
               target.heads++;
             }
@@ -165,6 +165,7 @@ module.exports = class GrowGame {
     for (let x = 0; x < this.boardSize; x++) {
       for (let y = 0; y < this.boardSize; y++) {
         let space = this.board[x][y];
+        if (space === null) continue;
         scores[space.player] = (scores[space.player] || 0) + 1;
       }
     }
@@ -178,9 +179,10 @@ module.exports = class GrowGame {
   getGameState() {
     return {
       "board": this.board,
+      "players": this.players,
       "currentPlayer": this.currentPlayer,
       "playerHasPlaced": this.playerHasPlaced,
-      "gameIsOver": isGameOver(),
+      "gameIsOver": this.isGameOver(),
       "scores": this.calculateScore(),
     }    
   }
