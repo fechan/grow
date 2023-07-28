@@ -79,10 +79,10 @@ function hoverUnplacedPiece(mouseMoveEvent, gameState, myName, onPlace) {
   }
 
   const boardSVG = d3.select("#board");
-  boardSVG.selectAll("circle")
-    .data(unplacedPiece, d => "unplaced-piece")
+  boardSVG.selectAll("circle.unplaced-stone")
+    .data(unplacedPiece, d => "unplaced-stone")
     .join(
-      enter => enter.append("circle")
+      enter => enter.append("circle").classed("unplaced-stone", true)
         .attr("cx", d => d.x * PITCH + PADDING)
         .attr("cy", d => d.y * PITCH + PADDING)
         .attr("r", STONE_R)
@@ -91,7 +91,7 @@ function hoverUnplacedPiece(mouseMoveEvent, gameState, myName, onPlace) {
         .on("click", (e, d) => onPlace(d.x, d.y)),
       update => update.attr("cx", d => d.x * PITCH + PADDING)
         .attr("cy", d => d.y * PITCH + PADDING),
-      exit => exit
+      exit => exit.remove()
       )
   
 }
@@ -114,8 +114,8 @@ function updateBoard(gameState, myName, onPlace) {
         .attr("y2", boardSize * PITCH)
         .attr("stroke", "black")
         .attr("stroke-width", "2"),
-      update => update,
-      exit => exit,
+      update => update.selection(),
+      exit => exit.remove(),
       )
 
   // horizontal lines
@@ -129,8 +129,8 @@ function updateBoard(gameState, myName, onPlace) {
       .attr("y2", d => d * PITCH + PADDING)
       .attr("x2", boardSize * PITCH)
       .attr("stroke", "black"),
-    update => update,
-    exit => exit,
+    update => update.selection(),
+    exit => exit.remove(),
     )
 
   // pieces
@@ -161,9 +161,20 @@ function updateBoard(gameState, myName, onPlace) {
           .attr("dominant-baseline", "middle")
           .attr("font-size", STONE_R)
 
-        return enter;
+        return stone;
         },
-      update => update,
-      exit => exit,
+      update => {
+        update.select("circle")
+          .attr("stroke", d => COLORS[players.indexOf(d.player)])
+          .attr("fill", d => COLORS[players.indexOf(d.player)])
+
+        update.select("text")
+          .filter(d => d.heads > 1)
+          .append("text")
+          .text(d => d.heads)
+
+        return update;
+        },
+      exit => exit.remove(),
       )
 }
