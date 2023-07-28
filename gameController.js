@@ -101,6 +101,7 @@ module.exports = class GameController {
       params.from_x,
       params.from_y
     );
+    console.info(`Processed move for ${playerName}`);
 
     if (success) {
       this.sendGameStateChanged(lobby.lobbyCode, lobby.game.getGameState());
@@ -113,7 +114,7 @@ module.exports = class GameController {
    * Called when a client disconnects
    */
   onDisconnect(socket, params) {
-    console.log("Client disconnected");
+    console.info("Client disconnected");
   }
 
 

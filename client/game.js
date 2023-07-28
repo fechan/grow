@@ -61,6 +61,7 @@ function hoverUnplacedPiece(mouseMoveEvent, gameState, myName, onPlace) {
   // array will contain the unplaced piece iff there is one
   // and the position is valid
   let unplacedPiece = [];
+  let placeStone;
 
   if (myName === gameState.currentPlayer && !playerHasPlaced) {
     let [mouseX, mouseY] = d3.pointer(mouseMoveEvent);
@@ -75,10 +76,16 @@ function hoverUnplacedPiece(mouseMoveEvent, gameState, myName, onPlace) {
         color: COLORS[players.indexOf(currentPlayer)],
         heads: 1,
       }];
+
+      placeStone = () => onPlace(x, y);
     }
   }
 
+  if (unplacedPiece.length === 0) onPlace = null;
+
   const boardSVG = d3.select("#board");
+  boardSVG.on("click", placeStone);
+  
   boardSVG.selectAll("circle.unplaced-stone")
     .data(unplacedPiece, d => "unplaced-stone")
     .join(
@@ -87,8 +94,7 @@ function hoverUnplacedPiece(mouseMoveEvent, gameState, myName, onPlace) {
         .attr("cy", d => d.y * PITCH + PADDING)
         .attr("r", STONE_R)
         .attr("stroke", d => d3.color(d.color).copy({opacity: 0.5}))
-        .attr("fill", d => d3.color(d.color).copy({opacity: 0.5}))
-        .on("click", (e, d) => onPlace(d.x, d.y)),
+        .attr("fill", d => d3.color(d.color).copy({opacity: 0.5})),
       update => update.attr("cx", d => d.x * PITCH + PADDING)
         .attr("cy", d => d.y * PITCH + PADDING),
       exit => exit.remove()
