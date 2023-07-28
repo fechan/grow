@@ -95,7 +95,7 @@ module.exports = class GameController {
     
     const success = lobby.game.processMove(
       playerName,
-      params.moveType,
+      params.type,
       params.target_x,
       params.target_y,
       params.from_x,

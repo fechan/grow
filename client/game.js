@@ -8,7 +8,7 @@ export const COLORS = ["red", "blue", "green", "yellow"];
 export function emptyGameState(boardSize) {
   const emptyGame = {
     board: [],
-    players: [],
+    players: [""],
     currentPlayer: "",
     playerHasPlaced: true,
     gameIsOver: true,
@@ -24,9 +24,17 @@ export function emptyGameState(boardSize) {
   return emptyGame;
 }
 
-export function update(gameState) {
+export function update(gameState, myName, onPlace) {
   updatePlayers(gameState);
-  updateBoard(gameState);
+  updateBoard(gameState, myName, onPlace);
+  updateEndTurnBtn(gameState, myName);
+}
+
+function updateEndTurnBtn(gameState, myName) {
+  const { currentPlayer, scores, playerHasPlaced } = gameState;
+  // you can only end turn if: it's your turn AND it's not the first turn (where you must place a stone/score a point)
+  let enableEndTurn = currentPlayer === myName && scores[myName] > 0;
+  document.getElementById("end-turn").disabled = !enableEndTurn;
 }
 
 function updatePlayers(gameState) {
@@ -47,51 +55,102 @@ function updatePlayers(gameState) {
   }
 }
 
-function updateBoard(gameState) {
-  const { board, currentPlayer, playerHasPlaced, gameIsOver, scores } = gameState;
-  const boardSize = board.length;
+function hoverUnplacedPiece(mouseMoveEvent, gameState, myName, onPlace) {
+  const { players, playerHasPlaced, currentPlayer, board } = gameState;
+
+  // array will contain the unplaced piece iff there is one
+  // and the position is valid
+  let unplacedPiece = [];
+
+  if (myName === gameState.currentPlayer && !playerHasPlaced) {
+    let [mouseX, mouseY] = d3.pointer(mouseMoveEvent);
+
+    let x = Math.round((mouseX - PADDING) / PITCH);
+    let y = Math.round((mouseY - PADDING) / PITCH);
+
+    if (x in board && y in board[x] && board[x][y] === null) {
+      unplacedPiece = [{
+        x: x,
+        y: y,
+        color: COLORS[players.indexOf(currentPlayer)],
+        heads: 1,
+      }];
+    }
+  }
 
   const boardSVG = d3.select("#board");
+  boardSVG.selectAll("circle")
+    .data(unplacedPiece, d => "unplaced-piece")
+    .join(
+      enter => enter.append("circle")
+        .attr("cx", d => d.x * PITCH + PADDING)
+        .attr("cy", d => d.y * PITCH + PADDING)
+        .attr("r", STONE_R)
+        .attr("stroke", d => d3.color(d.color).copy({opacity: 0.5}))
+        .attr("fill", d => d3.color(d.color).copy({opacity: 0.5}))
+        .on("click", (e, d) => onPlace(d.x, d.y)),
+      update => update.attr("cx", d => d.x * PITCH + PADDING)
+        .attr("cy", d => d.y * PITCH + PADDING),
+      exit => exit
+      )
+  
+}
+
+function updateBoard(gameState, myName, onPlace) {
+  const { players, board, currentPlayer, playerHasPlaced, gameIsOver, scores } = gameState;
+  const boardSize = board.length;
+
+  const boardSVG = d3.select("#board").on("mousemove", e => hoverUnplacedPiece(e, gameState, myName, onPlace))
 
   // vertical lines
-  boardSVG.selectAll("g")
+  boardSVG.selectAll("line.line-vertical")
     .data(Array(boardSize).keys(), d => "v" + d)
     .join(
       enter => enter.append("line")
+        .classed("line-vertical", true)
         .attr("x1", d => d * PITCH + PADDING)
         .attr("y1", PADDING)
         .attr("x2", d => d * PITCH + PADDING)
         .attr("y2", boardSize * PITCH)
         .attr("stroke", "black")
-        .attr("stroke-width", "2")
-    )
+        .attr("stroke-width", "2"),
+      update => update,
+      exit => exit,
+      )
 
   // horizontal lines
-  boardSVG.selectAll("g")
+  boardSVG.selectAll("line.line-horizontal")
   .data(Array(boardSize).keys(), d => "h" + d)
   .join(
     enter => enter.append("line")
+      .classed("line-horizontal", true)
       .attr("y1", d => d * PITCH + PADDING)
       .attr("x1", PADDING)
       .attr("y2", d => d * PITCH + PADDING)
       .attr("x2", boardSize * PITCH)
-      .attr("stroke", "black")
-  )
+      .attr("stroke", "black"),
+    update => update,
+    exit => exit,
+    )
 
   // pieces
-  boardSVG.selectAll("g")
+  boardSVG.selectAll("g.stone")
     .data(
       board.flat().filter(d => d !== null),
       d => `${d.x},${d.y}` // key
       )
     .join(
       enter => {
-        enter.append("circle")
+        let stone = enter.append("g").classed("stone", true)
+
+        stone.append("circle")
           .attr("cx", d => d.x * PITCH + PADDING)
           .attr("cy", d => d.y * PITCH + PADDING)
           .attr("r", STONE_R)
+          .attr("stroke", d => COLORS[players.indexOf(d.player)])
+          .attr("fill", d => COLORS[players.indexOf(d.player)])
 
-        enter.filter(d => d.heads > 1)
+        stone.filter(d => d.heads > 1)
           .append("text")
           .text(d => d.heads)
           .attr("x", d => d.x * PITCH + PADDING)
@@ -103,5 +162,8 @@ function updateBoard(gameState) {
           .attr("font-size", STONE_R)
 
         return enter;
-      })
+        },
+      update => update,
+      exit => exit,
+      )
 }

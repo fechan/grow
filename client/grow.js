@@ -19,11 +19,14 @@ function init() {
     updateLobbyScreen(lobbyInfo, myName);
   });
 
+  let onPlace = (x, y) => socket.emit("playMove", {player: myName, type: "place", target_x: x, target_y: y})
   socket.on("gameStateChanged", params => {
     let { gameState } = params;
-    game.update(gameState);
+    game.update(gameState, myName, onPlace);
     document.getElementById("menu-modal").classList.add("hidden");
   });
+
+  document.getElementById("end-turn").addEventListener("click", () => socket.emit("playMove", {player: myName, type: "end"}));
 
   document.getElementById("new-lobby").addEventListener("click", () => {
     updatePlayerNameScreen(true, () => {
