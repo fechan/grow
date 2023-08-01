@@ -5,6 +5,8 @@ const STONE_R = PITCH / 2;
 const PADDING = 50;
 export const COLORS = ["red", "blue", "green", "yellow"];
 
+let selectedSource = null;
+
 /**
  * Get an empty/placeholder game state
  * @param {Number} boardSize Size of empty board
@@ -33,11 +35,12 @@ export function emptyGameState(boardSize) {
  * Update the Grow game display with the given board state
  * @param {Object}    gameState Board state
  * @param {String}    myName    Name of the client's player
- * @param {Function}  onPlace   Callback to run when player places a stone
+ * @param {Function}  onPlace   Callback to run when the player places a stone
+ * @param {Function}  onMove    Callback to run when the player moves a stone
  */
-export function update(gameState, myName, onPlace) {
+export function update(gameState, myName, onPlace, onMove) {
   updatePlayers(gameState);
-  updateBoard(gameState, myName, onPlace);
+  updateBoard(gameState, myName, onPlace, onMove);
   updateEndTurnBtn(gameState, myName);
 }
 
@@ -86,7 +89,7 @@ function updatePlayers(gameState) {
  * @param {MouseEvent} mouseMoveEvent Mouse event corresponding to mouse hover
  * @returns {Number[2]} [x, y] pair of space being hovered over
  */
-function getHoveredPos(mouseMoveEvent) {
+function getMouseBoardPos(mouseMoveEvent) {
   let [mouseX, mouseY] = d3.pointer(mouseMoveEvent);
 
   let x = Math.round((mouseX - PADDING) / PITCH);
@@ -112,7 +115,7 @@ function hoverUnplacedPiece(mouseMoveEvent, gameState, myName, onPlace) {
   let placeStone;
 
   if (myName === gameState.currentPlayer && !playerHasPlaced) {
-    let [x, y] = getHoveredPos(mouseMoveEvent);
+    let [x, y] = getMouseBoardPos(mouseMoveEvent);
 
     if (x in board && y in board[x] && board[x][y] === null) {
       unplacedPiece = [{
@@ -146,17 +149,43 @@ function hoverUnplacedPiece(mouseMoveEvent, gameState, myName, onPlace) {
   
 }
 
+function moveStone(mouseDownEvent, gameState, myName, onMove) {
+  const { currentPlayer, board } = gameState;
+
+  if (myName !== currentPlayer) return;
+
+  let [x, y] = getMouseBoardPos(mouseDownEvent);
+  if (x in board && y in board[x]) {
+    if (selectedSource) {
+      let target = board[x][y];
+      if (target == null || target.player == myName) {
+        let [fromX, fromY] = selectedSource;
+        onMove(x, y, fromX, fromY);
+      }
+      selectedSource = null;
+    } else {
+      let source = board[x][y];
+      if (source && source.movable > 0 && source.player == myName) {
+        selectedSource = [x, y];
+      }
+    }
+  }
+}
+
 /**
  * Update the board display based on the game state
  * @param {Object}    gameState Game state
  * @param {String}    myName    Name of the client's player
  * @param {Function}  onPlace   Callback to run when a stone is placed
+ * @param {Function}  onPlace   Callback to run when a stone is moved
  */
-function updateBoard(gameState, myName, onPlace) {
+function updateBoard(gameState, myName, onPlace, onMove) {
   const { players, board, currentPlayer, playerHasPlaced, gameIsOver, scores } = gameState;
   const boardSize = board.length;
 
-  const boardSVG = d3.select("#board").on("mousemove", e => hoverUnplacedPiece(e, gameState, myName, onPlace))
+  const boardSVG = d3.select("#board")
+    .on("mousemove", e => hoverUnplacedPiece(e, gameState, myName, onPlace))
+    .on("mousedown", e => moveStone(e, gameState, myName, onMove))
 
   // vertical lines
   boardSVG.selectAll("line.line-vertical")
@@ -201,7 +230,7 @@ function updateBoard(gameState, myName, onPlace) {
           .attr("cx", d => d.x * PITCH + PADDING)
           .attr("cy", d => d.y * PITCH + PADDING)
           .attr("r", STONE_R)
-          .attr("fill", d => COLORS[players.indexOf(d.player)])
+          .attr("fill", d => (d.heads > 0) ? COLORS[players.indexOf(d.player)] : d3.color(COLORS[players.indexOf(d.player)]).darker(.9))
 
         stone.filter(d => d.heads > 1)
           .append("text")
@@ -216,7 +245,7 @@ function updateBoard(gameState, myName, onPlace) {
         update.classed("movable", d => d.movable > 0)
 
         update.select("circle")
-          .attr("fill", d => COLORS[players.indexOf(d.player)])
+          .attr("fill", d => (d.heads > 0) ? COLORS[players.indexOf(d.player)] : d3.color(COLORS[players.indexOf(d.player)]).darker(.9))
 
         update.select("text")
           .filter(d => d.heads > 1)

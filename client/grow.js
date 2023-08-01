@@ -20,9 +20,10 @@ function init() {
   });
 
   let onPlace = (x, y) => socket.emit("playMove", {player: myName, type: "place", target_x: x, target_y: y})
+  let onMove = (target_x, target_y, from_x, from_y) => socket.emit("playMove", {player: myName, type: "move", target_x: target_x, target_y: target_y, from_x: from_x, from_y: from_y})
   socket.on("gameStateChanged", params => {
     let { gameState } = params;
-    game.update(gameState, myName, onPlace);
+    game.update(gameState, myName, onPlace, onMove);
     document.getElementById("menu-modal").classList.add("hidden");
   });
 
