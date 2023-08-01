@@ -194,7 +194,8 @@ function updateBoard(gameState, myName, onPlace) {
       )
     .join(
       enter => {
-        let stone = enter.append("g").classed("stone", true)
+        let stone = enter.append("g")
+          .classed("stone", true)
 
         stone.append("circle")
           .attr("cx", d => d.x * PITCH + PADDING)
@@ -212,6 +213,8 @@ function updateBoard(gameState, myName, onPlace) {
         return stone;
         },
       update => {
+        update.classed("movable", d => d.movable > 0)
+
         update.select("circle")
           .attr("fill", d => COLORS[players.indexOf(d.player)])
 

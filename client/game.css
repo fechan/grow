@@ -26,3 +26,7 @@
   stroke: white;
   fill: white;
 }
+
+#game .stone.movable>circle {
+  stroke: blue;
+}
