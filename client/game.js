@@ -138,7 +138,6 @@ function hoverUnplacedPiece(mouseMoveEvent, gameState, myName, onPlace) {
         .attr("cx", d => d.x * PITCH + PADDING)
         .attr("cy", d => d.y * PITCH + PADDING)
         .attr("r", STONE_R)
-        .attr("stroke", d => d3.color(d.color).copy({opacity: 0.5}))
         .attr("fill", d => d3.color(d.color).copy({opacity: 0.5})),
       update => update.attr("cx", d => d.x * PITCH + PADDING)
         .attr("cy", d => d.y * PITCH + PADDING),
@@ -168,9 +167,7 @@ function updateBoard(gameState, myName, onPlace) {
         .attr("x1", d => d * PITCH + PADDING)
         .attr("y1", PADDING)
         .attr("x2", d => d * PITCH + PADDING)
-        .attr("y2", boardSize * PITCH)
-        .attr("stroke", "black")
-        .attr("stroke-width", "2"),
+        .attr("y2", boardSize * PITCH),
       update => update.selection(),
       exit => exit.remove(),
       )
@@ -184,8 +181,7 @@ function updateBoard(gameState, myName, onPlace) {
       .attr("y1", d => d * PITCH + PADDING)
       .attr("x1", PADDING)
       .attr("y2", d => d * PITCH + PADDING)
-      .attr("x2", boardSize * PITCH)
-      .attr("stroke", "black"),
+      .attr("x2", boardSize * PITCH),
     update => update.selection(),
     exit => exit.remove(),
     )
@@ -204,7 +200,6 @@ function updateBoard(gameState, myName, onPlace) {
           .attr("cx", d => d.x * PITCH + PADDING)
           .attr("cy", d => d.y * PITCH + PADDING)
           .attr("r", STONE_R)
-          .attr("stroke", d => COLORS[players.indexOf(d.player)])
           .attr("fill", d => COLORS[players.indexOf(d.player)])
 
         stone.filter(d => d.heads > 1)
@@ -212,17 +207,12 @@ function updateBoard(gameState, myName, onPlace) {
           .text(d => d.heads)
           .attr("x", d => d.x * PITCH + PADDING)
           .attr("y", d => d.y * PITCH + PADDING)
-          .attr("text-anchor", "middle")
-          .attr("stroke", "white")
-          .attr("fill", "white")
-          .attr("dominant-baseline", "middle")
           .attr("font-size", STONE_R)
 
         return stone;
         },
       update => {
         update.select("circle")
-          .attr("stroke", d => COLORS[players.indexOf(d.player)])
           .attr("fill", d => COLORS[players.indexOf(d.player)])
 
         update.select("text")

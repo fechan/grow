@@ -1,3 +1,8 @@
+/*
+  General styles for the main/index page, excluding those for the
+  Grow game state display itself.
+*/
+
 body {
   margin: 0;
 }
@@ -24,9 +29,4 @@ body {
 
 .hidden {
   display: none;
-}
-
-#game {
-  display: flex;
-  flex-direction: column;
 }

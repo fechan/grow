@@ -1,0 +1,28 @@
+/*
+  Styles for the Grow game state display. (Anything inside #game)
+*/
+
+#game {
+  display: flex;
+  flex-direction: column;
+}
+
+#game .line-vertical,
+#game .line-horizontal {
+  stroke: black;
+  stroke-width: 2;
+}
+
+#game .stone>circle,
+#game .unplaced-stone>circle {
+  stroke: black;
+  stroke-width: 2;
+}
+
+#game .stone>text {
+  text-anchor: middle;
+  dominant-baseline: middle;
+
+  stroke: white;
+  fill: white;
+}
