@@ -5,6 +5,11 @@ const STONE_R = PITCH / 2;
 const PADDING = 50;
 export const COLORS = ["red", "blue", "green", "yellow"];
 
+/**
+ * Get an empty/placeholder game state
+ * @param {Number} boardSize Size of empty board
+ * @returns {Object} Emtpy game state
+ */
 export function emptyGameState(boardSize) {
   const emptyGame = {
     board: [],
@@ -24,19 +29,37 @@ export function emptyGameState(boardSize) {
   return emptyGame;
 }
 
+/**
+ * Update the Grow game display with the given board state
+ * @param {Object}    gameState Board state
+ * @param {String}    myName    Name of the client's player
+ * @param {Function}  onPlace   Callback to run when player places a stone
+ */
 export function update(gameState, myName, onPlace) {
   updatePlayers(gameState);
   updateBoard(gameState, myName, onPlace);
   updateEndTurnBtn(gameState, myName);
 }
 
+/**
+ * Enable/disable the end turn button based on the game state
+ * 
+ * You can only end turn iff: it's your turn AND
+ * it's not the first turn (where you must place a stone/score a point)
+ * @param {Object} gameState  Game state
+ * @param {String} myName     Name of the client's player
+ */
 function updateEndTurnBtn(gameState, myName) {
-  const { currentPlayer, scores, playerHasPlaced } = gameState;
-  // you can only end turn if: it's your turn AND it's not the first turn (where you must place a stone/score a point)
+  const { currentPlayer, scores } = gameState;
+
   let enableEndTurn = currentPlayer === myName && scores[myName] > 0;
   document.getElementById("end-turn").disabled = !enableEndTurn;
 }
 
+/**
+ * Update the player/score list based on the game state
+ * @param {Object} gameState Game state
+ */
 function updatePlayers(gameState) {
   let { scores, players, currentPlayer } = gameState;
   let playerList = document.getElementById("player-scores");
@@ -55,6 +78,31 @@ function updatePlayers(gameState) {
   }
 }
 
+/**
+ * Get the space on the board the mouse is hovering over, as an [x, y] pair.
+ * 
+ * The returned value is not necessarily on the board. You should check that
+ * the space actually lies within the board bounds!
+ * @param {MouseEvent} mouseMoveEvent Mouse event corresponding to mouse hover
+ * @returns {Number[2]} [x, y] pair of space being hovered over
+ */
+function getHoveredPos(mouseMoveEvent) {
+  let [mouseX, mouseY] = d3.pointer(mouseMoveEvent);
+
+  let x = Math.round((mouseX - PADDING) / PITCH);
+  let y = Math.round((mouseY - PADDING) / PITCH);
+
+  return [x, y];
+}
+
+/**
+ * Hover a ghost piece on the board where the mouse is hovering over, if
+ * it is the client's turn and they haven't placed yet
+ * @param {MouseEvent}  mouseMoveEvent  Mouse event corresponding to mouse hover
+ * @param {Object}      gameState       Game state
+ * @param {String}      myName          Name of the client's player
+ * @param {Function}    onPlace         Callback to run when a stone is placed
+ */
 function hoverUnplacedPiece(mouseMoveEvent, gameState, myName, onPlace) {
   const { players, playerHasPlaced, currentPlayer, board } = gameState;
 
@@ -64,10 +112,7 @@ function hoverUnplacedPiece(mouseMoveEvent, gameState, myName, onPlace) {
   let placeStone;
 
   if (myName === gameState.currentPlayer && !playerHasPlaced) {
-    let [mouseX, mouseY] = d3.pointer(mouseMoveEvent);
-
-    let x = Math.round((mouseX - PADDING) / PITCH);
-    let y = Math.round((mouseY - PADDING) / PITCH);
+    let [x, y] = getHoveredPos(mouseMoveEvent);
 
     if (x in board && y in board[x] && board[x][y] === null) {
       unplacedPiece = [{
@@ -102,6 +147,12 @@ function hoverUnplacedPiece(mouseMoveEvent, gameState, myName, onPlace) {
   
 }
 
+/**
+ * Update the board display based on the game state
+ * @param {Object}    gameState Game state
+ * @param {String}    myName    Name of the client's player
+ * @param {Function}  onPlace   Callback to run when a stone is placed
+ */
 function updateBoard(gameState, myName, onPlace) {
   const { players, board, currentPlayer, playerHasPlaced, gameIsOver, scores } = gameState;
   const boardSize = board.length;
