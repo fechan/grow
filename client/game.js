@@ -114,7 +114,7 @@ function hoverUnplacedPiece(mouseMoveEvent, gameState, myName, onPlace) {
   let unplacedPiece = [];
   let placeStone;
 
-  if (myName === gameState.currentPlayer && !playerHasPlaced) {
+  if (myName === gameState.currentPlayer && !playerHasPlaced && selectedSource === null) {
     let [x, y] = getMouseBoardPos(mouseMoveEvent);
 
     if (x in board && y in board[x] && board[x][y] === null) {
@@ -157,6 +157,10 @@ function moveStone(mouseDownEvent, gameState, myName, onMove) {
   let [x, y] = getMouseBoardPos(mouseDownEvent);
   if (x in board && y in board[x]) {
     if (selectedSource) {
+      if (x == selectedSource[x] && y == selectedSource[y]) {
+        selectedSource = null;
+        return;
+      }
       let target = board[x][y];
       if (target == null || target.player == myName) {
         let [fromX, fromY] = selectedSource;
@@ -185,7 +189,7 @@ function updateBoard(gameState, myName, onPlace, onMove) {
 
   const boardSVG = d3.select("#board")
     .on("mousemove", e => hoverUnplacedPiece(e, gameState, myName, onPlace))
-    .on("mousedown", e => moveStone(e, gameState, myName, onMove))
+    .on("click.moveStone", e => moveStone(e, gameState, myName, onMove))
 
   // vertical lines
   boardSVG.selectAll("line.line-vertical")
@@ -230,7 +234,7 @@ function updateBoard(gameState, myName, onPlace, onMove) {
           .attr("cx", d => d.x * PITCH + PADDING)
           .attr("cy", d => d.y * PITCH + PADDING)
           .attr("r", STONE_R)
-          .attr("fill", d => (d.heads > 0) ? COLORS[players.indexOf(d.player)] : d3.color(COLORS[players.indexOf(d.player)]).darker(.9))
+          .attr("fill", d => (d.heads > 0) ? COLORS[players.indexOf(d.player)] : d3.color(COLORS[players.indexOf(d.player)]).darker(.95))
 
         stone.filter(d => d.heads > 1)
           .append("text")
@@ -245,7 +249,7 @@ function updateBoard(gameState, myName, onPlace, onMove) {
         update.classed("movable", d => d.movable > 0)
 
         update.select("circle")
-          .attr("fill", d => (d.heads > 0) ? COLORS[players.indexOf(d.player)] : d3.color(COLORS[players.indexOf(d.player)]).darker(.9))
+          .attr("fill", d => (d.heads > 0) ? COLORS[players.indexOf(d.player)] : d3.color(COLORS[players.indexOf(d.player)]).darker(.95))
 
         update.select("text")
           .filter(d => d.heads > 1)
