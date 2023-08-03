@@ -236,9 +236,8 @@ function updateBoard(gameState, myName, onPlace, onMove) {
           .attr("r", STONE_R)
           .attr("fill", d => (d.heads > 0) ? COLORS[players.indexOf(d.player)] : d3.color(COLORS[players.indexOf(d.player)]).darker(.95))
 
-        stone.filter(d => d.heads > 1)
-          .append("text")
-          .text(d => d.heads)
+        stone.append("text")
+          .text(d => d.heads <= 1 ? "" : d.heads)
           .attr("x", d => d.x * PITCH + PADDING)
           .attr("y", d => d.y * PITCH + PADDING)
           .attr("font-size", STONE_R)
@@ -251,10 +250,7 @@ function updateBoard(gameState, myName, onPlace, onMove) {
         update.select("circle")
           .attr("fill", d => (d.heads > 0) ? COLORS[players.indexOf(d.player)] : d3.color(COLORS[players.indexOf(d.player)]).darker(.95))
 
-        update.select("text")
-          .filter(d => d.heads > 1)
-          .append("text")
-          .text(d => d.heads)
+        update.select("text").text(d => d.heads <= 1 ? "" : d.heads)
 
         return update;
         },
