@@ -18,14 +18,18 @@ button {
   background-color: hsl(143, 100%, 38%);
 }
 
-button:hover {
+button:hover:enabled {
   background-color: hsl(143, 100%, 45%);
 }
 
-button:active {
+button:active:enabled {
   box-shadow: none;
   padding-bottom: .3rem;
   margin-top: .15rem;
+}
+
+button:disabled {
+  opacity: 0.5;
 }
 
 .btn-lg {
@@ -39,7 +43,15 @@ button:active {
   padding-bottom: calc(var(--borderHeight) + var(--btnPadding));
 }
 
-.btn-lg:active {
+.btn-lg:active:enabled {
   padding-bottom: 1.2rem;
   margin-top: .3rem;
+}
+
+.btn-danger {
+  background-color: hsl(0, 100%, 45%);
+}
+
+.btn-danger:hover:enabled {
+  background-color: hsl(0, 100%, 52%);
 }
