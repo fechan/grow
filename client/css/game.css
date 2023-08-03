@@ -5,6 +5,7 @@
 #game {
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
 #game .line-vertical,
