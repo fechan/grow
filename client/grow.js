@@ -29,28 +29,25 @@ function init() {
 
   document.getElementById("end-turn").addEventListener("click", () => socket.emit("playMove", {player: myName, type: "end"}));
 
-  document.getElementById("new-lobby").addEventListener("click", () => {
-    updatePlayerNameScreen(true, () => {
-      let playerName = document.getElementById("nickname").value;
-      playerName = playerName == "" ? "anonymous" : playerName;
-      socket.emit("createLobby", {"hostPlayerName": playerName})
-    });
-    setMenuScreen("player-name");
+  document.getElementById("submit-nickname").addEventListener("click", () => {
+    let playerName = document.getElementById("nickname").value;
+    playerName = playerName == "" ? "anonymous" : playerName;
+    socket.emit("createLobby", {"hostPlayerName": playerName})
   });
+  document.getElementById("new-lobby").addEventListener("click", () => setMenuScreen("player-name"));
 
   document.getElementById("start-game").addEventListener("click", () => {
     socket.emit("startGame")
   });
 
-  document.getElementById("join-game").addEventListener("click", () => {
-    updatePlayerNameScreen(false, () => {
-      let lobby = document.getElementById("lobby-code-input").value;
-      let playerName = document.getElementById("nickname").value;
-      playerName = playerName == "" ? "anonymous" : playerName;
-      socket.emit("joinLobby", {"playerName": playerName, "lobby": lobby})
-    });
-    setMenuScreen("player-name");
+  document.getElementById("submit-nickname-join").addEventListener("click", () => {
+    let lobby = document.getElementById("lobby-code-input").value;
+    let playerName = document.getElementById("nickname-join").value;
+    playerName = playerName == "" ? "anonymous" : playerName;
+    socket.emit("joinLobby", {"playerName": playerName, "lobby": lobby})
   });
+  document.getElementById("join-lobby").addEventListener("click", () => setMenuScreen("joining-lobby"));
+
 }
 
 /**
@@ -67,17 +64,6 @@ function setMenuScreen(screenID) {
       screen.classList.remove("hidden");
     }
   }
-}
-
-/**
- * Update the player name screen
- * @param {Boolean} creatingGame  true if the client is creating a game
- * @param {Function} onNameCommit Callback function to run when player name committed
- */
-function updatePlayerNameScreen(creatingGame, onNameCommit) {
-  let submitBtn = document.getElementById("submit-nickname");
-  submitBtn.textContent = creatingGame ? "Create game" : "Join game";
-  submitBtn.addEventListener("click", onNameCommit);
 }
 
 /**
