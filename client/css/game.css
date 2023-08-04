@@ -61,4 +61,9 @@
 #player-scores .current-player {
   border: 2px solid gold;
   background-color: hsla(51, 100%, 50%, 10%);
+  margin-bottom: 50px;
+}
+
+#end-turn {
+  width: 20rem !important;
 }

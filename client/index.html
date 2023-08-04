@@ -22,7 +22,7 @@
           </li>
         </template>
       </ol>
-      <button id="end-turn" class="btn-danger" disabled>End turn</button>
+      <button id="end-turn" class="btn-danger btn-lg" disabled>End turn</button>
       <svg id="board" width="800" height="800"></svg>
     </div>
 
@@ -42,6 +42,7 @@
           </div>
 
           <button id="submit-nickname" class="btn-lg">Create game</button>
+          <button class="btn-back">Back to main menu</button>
         </div>
 
         <div id="joining-lobby" class="hidden menu-screen">
@@ -58,11 +59,11 @@
           </div>
 
           <button id="submit-nickname-join" class="btn-lg">Join game</button>
+          <button class="btn-back">Back to main menu</button>
         </div>
 
         <div id="lobby" class="hidden menu-screen">
           <header>
-            <button>Back</button>
             <h2>Lobby</h2>
           </header>
 
@@ -80,6 +81,7 @@
             <button id="start-game" class="hidden btn-lg">Start game</button>
             <span id="waiting-for-host">Waiting for host to start the game...</span>
           </section>
+          <button class="btn-back">Leave lobby</button>
         </div>
       </div>
     </div>
