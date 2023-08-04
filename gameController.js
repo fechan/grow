@@ -206,18 +206,18 @@ module.exports = class GameController {
 
   /**
    * Detect if the socket's user has no lobby, and optionally send an error if they have no lobby
-   * @param {Socket}  socket    Socket to check
-   * @param {Boolean} sendError Whether to send the error. Defaults to true
+   * @param {Socket}  socket      Socket to check
+   * @param {Boolean} [sendError] Whether to send the error. Defaults to true.
    * @returns {Boolean} True if the socket is not in a lobby
    */
   #socketNotInActiveLobby(socket, sendError=true) {
     if (socket.data.lobby == undefined) {
-      this.sendError(socket, "userNotInLobby", "You were disconnected from the game!");
+      if (sendError) this.sendError(socket, "userNotInLobby", "You were disconnected from the game!");
       return true;
     }
 
     if (socket.data.lobby.getIsStale()) {
-      this.sendError(socket, "userInStaleLobby", "This lobby is closed!");
+      if (sendError) this.sendError(socket, "userInStaleLobby", "This lobby is closed!");
       return true;
     }
 
@@ -226,10 +226,10 @@ module.exports = class GameController {
 
   /**
    * Check if all the params in `types` are in `params`, and check they are all the correct types.
-   * @param {Socket} socket         Socket to send errors to if the check fails
-   * @param {Object} params         Params from incoming websocket message
-   * @param {Object} requiredTypes  Object mapping required param names to type names returned by `typeof`
-   * @param {Object} optionalTypes  Object mapping optional param names to type names returned by `typeof`
+   * @param {Socket} socket           Socket to send errors to if the check fails
+   * @param {Object} params           Params from incoming websocket message
+   * @param {Object} requiredTypes    Object mapping required param names to type names returned by `typeof`
+   * @param {Object} [optionalTypes]  Object mapping optional param names to type names returned by `typeof`
    * @returns {Boolean} True if all the expected params exist and are the right type
    */
   #paramsMatchExpected(socket, params, requiredTypes, optionalTypes={}) {

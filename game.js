@@ -192,7 +192,7 @@ module.exports = class GrowGame {
 
   /**
    * Get the game state as a serializable object
-   * @param {Boolean} partial True if you only want board changes instead of the whole board
+   * @param {Boolean} [partial] True if you only want board changes instead of the whole board
    * @returns {Object} Game state. If partial is true, the object returned will have a "boardChanges" key instead of "board"
    */
   getGameState(partial) {
