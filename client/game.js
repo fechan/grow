@@ -182,18 +182,20 @@ function moveStone(mouseDownEvent, gameState, myName, onMove) {
  * Update the board's cursor to be a pointer or default depending on game state
  * @param {MouseEvent} mouseMoveEvent Mouse move event
  * @param {Object}     gameState      Current game state
+ * @param {String}     myName         Name of client's player
  */
-function updateCursor(mouseMoveEvent, gameState) {
-  let { board, playerHasPlaced } = gameState;
+function updateCursor(mouseMoveEvent, gameState, myName) {
+  let { board, playerHasPlaced, currentPlayer } = gameState;
   let [x, y] = getMouseBoardPos(mouseMoveEvent);
 
+  let myTurn = currentPlayer == myName;
   let spaceInBoard = x in board && y in board;
   let spaceHasPiece = spaceInBoard && board[x][y] !== null;
   let spaceIsMovable = spaceHasPiece && board[x][y].movable > 0;
   let canPlacePieceOnSpace = spaceInBoard && !playerHasPlaced && !spaceHasPiece
 
   let boardSVG = document.getElementById("board");
-  if (spaceIsMovable || canPlacePieceOnSpace) {
+  if (myTurn && (spaceIsMovable || canPlacePieceOnSpace)) {
     boardSVG.classList.add("cursor-pointer");
   } else {
     boardSVG.classList.remove("cursor-pointer");
@@ -213,7 +215,7 @@ function updateBoard(gameState, myName, onPlace, onMove) {
 
   const boardSVG = d3.select("#board")
     .on("mousemove.unplaced", e => hoverUnplacedPiece(e, gameState, myName, onPlace))
-    .on("mousemove.cursor", e => updateCursor(e, gameState))
+    .on("mousemove.cursor", e => updateCursor(e, gameState, myName))
     .on("click.moveStone", e => moveStone(e, gameState, myName, onMove))
 
   // vertical lines
