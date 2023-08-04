@@ -104,7 +104,7 @@ module.exports = class GameController {
     console.info(`Processed move for ${playerName}`);
 
     if (success) {
-      this.sendGameStateChanged(lobby.lobbyCode, lobby.game.getGameState());
+      this.sendGameStateChanged(lobby.lobbyCode, lobby.game.getGameState(true));
     } else {
       this.sendError(socket, "illegalMove", "You tried to make an illegal move!");
     }

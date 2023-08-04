@@ -19,6 +19,8 @@ module.exports = class GrowGame {
     this.currentPlayer = players[0];
     this.playerHasPlaced = false; // Has the current player placed a new stone this turn?
     this.turn = 0;
+
+    this.boardChanges = [];
   }
 
   /**
@@ -49,7 +51,10 @@ module.exports = class GrowGame {
           for (let y = 0; y < this.boardSize; y++) {
             let stone = this.board[x][y];
             if (stone?.heads) {
-              if (!dry_run) this.board[x][y].movable = stone.player === this.currentPlayer ? stone.heads : 0;
+              if (!dry_run) {
+                this.board[x][y].movable = stone.player === this.currentPlayer ? stone.heads : 0;
+                this.boardChanges.push(this.board[x][y]);
+              }
             }
           }
         }
@@ -61,6 +66,7 @@ module.exports = class GrowGame {
         if (target === null && !this.playerHasPlaced) {
           if (!dry_run) {
             this.board[target_x][target_y] = {player: player, heads: 1, movable: 0, x: target_x, y: target_y};
+            this.boardChanges.push(this.board[target_x][target_y]);
             this.openSpaces--;
             this.playerHasPlaced = true;
           }
@@ -85,6 +91,8 @@ module.exports = class GrowGame {
             } else {
               target.heads++;
             }
+            this.boardChanges.push(this.board[from_x][from_y]);
+            this.boardChanges.push(this.board[target_x][target_y]);
           }
           return true;
         }
@@ -172,18 +180,30 @@ module.exports = class GrowGame {
     return scores;
   }
 
+  getBoardChanges() {
+    let changes = this.boardChanges;
+    this.boardChanges = [];
+    return changes;
+  }
+
   /**
    * Get the game state as a serializable object
    * @returns Game state
    */
-  getGameState() {
-    return {
-      "board": this.board,
+  getGameState(partial) {
+    let gameState = {
       "players": this.players,
       "currentPlayer": this.currentPlayer,
       "playerHasPlaced": this.playerHasPlaced,
       "gameIsOver": this.isGameOver(),
       "scores": this.calculateScore(),
-    }    
+    }
+
+    if (partial) {
+      let boardChanges = this.getBoardChanges();
+      return {...gameState, "boardChanges": boardChanges}
+    } else {
+      return {...gameState, "board": this.board}
+    }
   }
 }

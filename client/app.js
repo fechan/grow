@@ -2,7 +2,8 @@ import * as game from "./game.js"
 
 function init() {
   let myName;
-  game.update(game.emptyGameState(15));
+  let lastGameState = game.emptyGameState(15);
+  game.update(lastGameState);
 
   let socket = io();
 
@@ -23,7 +24,14 @@ function init() {
   let onMove = (target_x, target_y, from_x, from_y) => socket.emit("playMove", {player: myName, type: "move", target_x: target_x, target_y: target_y, from_x: from_x, from_y: from_y})
   socket.on("gameStateChanged", params => {
     let { gameState } = params;
+
+    if ("boardChanges" in gameState) {
+      applyBoardChanges(lastGameState.board, gameState.boardChanges)
+      gameState.board = lastGameState.board;
+    }
     game.update(gameState, myName, onPlace, onMove);
+    lastGameState = gameState;
+
     document.getElementById("menu-modal").classList.add("hidden");
   });
 
@@ -63,6 +71,17 @@ function init() {
 
   for (let backBtn of document.querySelectorAll(".btn-back")) {
     backBtn.addEventListener("click", () => setMenuScreen("main-menu"))
+  }
+}
+
+/**
+ * Apply the board changes to the given board in place
+ * @param {Object[]} board        Board to apply changes to
+ * @param {Object[]} boardChanges Changes to the board
+ */
+function applyBoardChanges(board, boardChanges) {
+  for (let change of boardChanges) {
+    board[change.x][change.y] = change;
   }
 }
 
