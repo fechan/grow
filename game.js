@@ -180,6 +180,10 @@ module.exports = class GrowGame {
     return scores;
   }
 
+  /**
+   * Get changes to the board since the last time this function was called
+   * @returns {Object[]} List of changed stones
+   */
   getBoardChanges() {
     let changes = this.boardChanges;
     this.boardChanges = [];
@@ -188,6 +192,7 @@ module.exports = class GrowGame {
 
   /**
    * Get the game state as a serializable object
+   * @param {Boolean} partial True if you only want board changes instead of the whole board
    * @returns Game state
    */
   getGameState(partial) {
@@ -200,8 +205,7 @@ module.exports = class GrowGame {
     }
 
     if (partial) {
-      let boardChanges = this.getBoardChanges();
-      return {...gameState, "boardChanges": boardChanges}
+      return {...gameState, "boardChanges": this.getBoardChanges()}
     } else {
       return {...gameState, "board": this.board}
     }
