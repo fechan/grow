@@ -34,7 +34,7 @@ module.exports = class GrowGame {
    * @returns {Boolean} Whether the move was valid
    */
   processMove(player, type, target_x, target_y, from_x, from_y, dry_run = false) {
-    if (player !== this.currentPlayer) {
+    if (player !== this.currentPlayer || this.isGameOver()) {
       return false;
     }
 

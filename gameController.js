@@ -27,8 +27,12 @@ module.exports = class GameController {
    * @param {String} params.playerName  Name of joining player
    */
   onJoinLobby(socket, params) {
-    const lobbyToJoin = params.lobby.toUpperCase();
+    const lobbyToJoin = params.lobby.toUpperCase().trim();
     const lobby = this.lobbies[lobbyToJoin];
+
+    if (lobby == undefined) {
+      this.sendError(socket, "lobbyNotFound", `Lobby with code ${lobbyToJoin} not found!`)
+    }
 
     const playerName = lobby.addPlayer(params.playerName);
     const lobbyInfo = lobby.getLobbyInfo();
@@ -73,7 +77,7 @@ module.exports = class GameController {
    * Server will send `gameStateChanged` to all players in the lobby.
    */
   onStartGame(socket, params) {
-    // TODO: check if the socket is in a lobby
+    if (this.#socketNotInActiveLobby(socket)) return;
 
     const lobby = socket.data.lobby;
     lobby.startGame();
@@ -89,7 +93,7 @@ module.exports = class GameController {
    * @param {Object} params See params in `Game.processMove()`
    */
   onPlayMove(socket, params) {
-    // TODO: check if the socket is in an active game
+    if (this.#socketNotInActiveLobby(socket)) return;
 
     const { playerName, lobby } = socket.data;
     
@@ -114,16 +118,25 @@ module.exports = class GameController {
    * Called when a client disconnects or leaves a lobby
    */
   onDisconnectOrLeave(socket, params) {
+    if (this.#socketNotInActiveLobby(socket, false)) return;
+
     const { playerName, lobby } = socket.data;
 
     if (lobby) {
       lobby.removePlayer(playerName);
-      socket.data.lobby = null;
+      socket.leave(lobby.lobbyCode);
 
-      this.sendLobbyInfoChanged(lobby.getLobbyInfo())
+      if (lobby.getIsStale()) {
+        delete this.lobbies[lobby.lobbyCode];
+        console.info(`Deleted a stale game`);
+      } else {
+        this.sendLobbyInfoChanged(lobby.getLobbyInfo());
+      }
+
+      socket.data.lobby = undefined;
     }
 
-    console.info("Client disconnected");
+    console.info("Client disconnected or left a lobby");
   }
 
 
@@ -172,5 +185,25 @@ module.exports = class GameController {
       "message": message
     });
     console.error(`- Sent ${code} error to socket ${socket.id}`);
+  }
+
+  /**
+   * Detect if the socket's user has no lobby, and optionally send an error if they have no lobby
+   * @param {Socket}  socket    Socket to check
+   * @param {Boolean} sendError Whether to send the error. Defaults to true
+   * @returns {Boolean} True if the socket is not in a lobby
+   */
+  #socketNotInActiveLobby(socket, sendError=true) {
+    if (socket.data.lobby == undefined) {
+      this.sendError(socket, "userNotInLobby", "You were disconnected from the game!");
+      return true;
+    }
+
+    if (socket.data.lobby.getIsStale()) {
+      this.sendError(socket, "userInStaleLobby", "This lobby is closed!");
+      return true;
+    }
+
+    return false;
   }
 }
