@@ -13,8 +13,8 @@ module.exports = class GameController {
       socket.on("createLobby", params => this.onCreateLobby(socket, params));
       socket.on("startGame",   params => this.onStartGame(socket, params));
       socket.on("playMove",    params => this.onPlayMove(socket, params));
-      socket.on("resign",      params => this.onResign(socket, params)); // TODO: implement me
-      socket.on("disconnect",  params => this.onDisconnect(socket, params)); // TODO: implement me
+      socket.on("leave",       params => this.onDisconnectOrLeave(socket, params));
+      socket.on("disconnect",  params => this.onDisconnectOrLeave(socket, params));
     });
   }
 
@@ -111,9 +111,16 @@ module.exports = class GameController {
   }
 
   /**
-   * Called when a client disconnects
+   * Called when a client disconnects or leaves a lobby
    */
-  onDisconnect(socket, params) {
+  onDisconnectOrLeave(socket, params) {
+    const { playerName, lobby } = socket.data;
+
+    if (lobby) {
+      lobby.removePlayer(playerName);
+      socket.data.lobby = null;
+    }
+
     console.info("Client disconnected");
   }
 
