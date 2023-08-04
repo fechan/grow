@@ -27,6 +27,9 @@ module.exports = class GameController {
    * @param {String} params.playerName  Name of joining player
    */
   onJoinLobby(socket, params) {
+    const expected = {"lobby": "string", "playerName": "string"};
+    if (!this.#paramsMatchExpected(socket, params, expected)) return;
+
     const lobbyToJoin = params.lobby.toUpperCase().trim();
     const lobby = this.lobbies[lobbyToJoin];
 
@@ -55,6 +58,11 @@ module.exports = class GameController {
    * @param {String} params.hostPlayerName Name of player who created the lobby
    */
   onCreateLobby(socket, params) {
+    const expected = {"hostPlayerName": "string"};
+    if (!this.#paramsMatchExpected(socket, params, expected)) return;
+
+    if (!this.#paramsMatchExpected(socket, params, {"hostPlayerName": "string"})) return;
+
     const newLobbyCode = crypto.randomBytes(2).toString("hex").toUpperCase();
     const newLobby = new Lobby(newLobbyCode);
     this.lobbies[newLobbyCode] = newLobby;
@@ -94,6 +102,15 @@ module.exports = class GameController {
    */
   onPlayMove(socket, params) {
     if (this.#socketNotInActiveLobby(socket)) return;
+
+    const expected = {"type": "string"};
+    const optional = {
+      "target_x": "number",
+      "target_y": "number",
+      "from_x": "number",
+      "from_y": "number",
+    }
+    if (!this.#paramsMatchExpected(socket, params, expected, optional)) return;
 
     const { playerName, lobby } = socket.data;
     
@@ -205,5 +222,30 @@ module.exports = class GameController {
     }
 
     return false;
+  }
+
+  /**
+   * Check if all the params in `types` are in `params`, and check they are all the correct types.
+   * @param {Socket} socket         Socket to send errors to if the check fails
+   * @param {Object} params         Params from incoming websocket message
+   * @param {Object} requiredTypes  Object mapping required param names to type names returned by `typeof`
+   * @param {Object} optionalTypes  Object mapping optional param names to type names returned by `typeof`
+   * @returns {Boolean} True if all the expected params exist and are the right type
+   */
+  #paramsMatchExpected(socket, params, requiredTypes, optionalTypes={}) {
+    for (const [requiredParam, expectedType] of Object.entries(requiredTypes)) {
+      if (!(requiredParam in params) || typeof params[requiredParam] !== expectedType) {
+        this.sendError(socket, "badRequest", "Client made a bad request!");
+        return false;
+      }
+    }
+
+    for (const [optionalParam, expectedType] of Object.entries(optionalTypes)) {
+      if (optionalParam in params && typeof params[optionalParam] !== expectedType) {
+        this.sendError(socket, "badRequest", "Client made a bad request!");
+        return false;
+      }
+    }
+    return true;
   }
 }
