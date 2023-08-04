@@ -122,6 +122,7 @@ module.exports = class GameController {
         break;
       default:
         this.sendError(socket, "illegalMove", "You tried to make an illegal move!");
+        return;
     }
 
     const { playerName, lobby } = socket.data;
