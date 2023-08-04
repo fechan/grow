@@ -119,6 +119,8 @@ module.exports = class GameController {
     if (lobby) {
       lobby.removePlayer(playerName);
       socket.data.lobby = null;
+
+      this.sendLobbyInfoChanged(lobby.getLobbyInfo())
     }
 
     console.info("Client disconnected");

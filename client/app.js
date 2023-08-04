@@ -48,10 +48,11 @@ function init() {
   });
   document.getElementById("join-lobby").addEventListener("click", () => setMenuScreen("joining-lobby"));
 
+  document.getElementById("leave-lobby").addEventListener("click", () => socket.emit("leave"))
+
   for (let backBtn of document.querySelectorAll(".btn-back")) {
     backBtn.addEventListener("click", () => setMenuScreen("main-menu"))
   }
-
 }
 
 /**
