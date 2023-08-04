@@ -48,3 +48,31 @@
 .menu-screen label {
   font-size: larger;
 }
+
+#lobby-code {
+  border: 2px dashed grey;
+  border-radius: .3rem;
+  font-size: xx-large;
+  background-color: white;
+}
+
+#lobby-code:hover {
+  background-color: hsl(0, 0%, 95%);
+}
+
+#lobby-code:active {
+  background-color: hsl(0, 0%, 80%);
+}
+
+#lobby-code::after {
+  content: "📋";
+  font-size: medium;
+  padding-left: .5em;
+  vertical-align: middle;
+}
+
+#lobby-code-copy-label {
+  color: grey;
+  font-size: small;
+  margin-bottom: .1em;
+}

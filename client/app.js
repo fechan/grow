@@ -50,6 +50,17 @@ function init() {
 
   document.getElementById("leave-lobby").addEventListener("click", () => socket.emit("leave"))
 
+  document.getElementById("lobby-code").addEventListener("click", (e) => {
+    navigator.clipboard.writeText(e.target.textContent).then(
+      () => {
+        let label = document.getElementById("lobby-code-copy-label");
+        let oldText = label.textContent;
+        label.textContent = "Copied!"
+        setTimeout(() => label.textContent = oldText, 1000);
+      }
+    );
+  });
+
   for (let backBtn of document.querySelectorAll(".btn-back")) {
     backBtn.addEventListener("click", () => setMenuScreen("main-menu"))
   }
