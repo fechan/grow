@@ -157,7 +157,7 @@ function moveStone(mouseDownEvent, gameState, myName, onMove) {
   let [x, y] = getMouseBoardPos(mouseDownEvent);
   if (x in board && y in board[x]) {
     if (selectedSource) {
-      if (x == selectedSource[x] && y == selectedSource[y]) {
+      if (x == selectedSource[0] && y == selectedSource[1]) {
         selectedSource = null;
         return;
       }
