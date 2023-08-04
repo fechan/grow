@@ -103,14 +103,26 @@ module.exports = class GameController {
   onPlayMove(socket, params) {
     if (this.#socketNotInActiveLobby(socket)) return;
 
-    const expected = {"type": "string"};
-    const optional = {
-      "target_x": "number",
-      "target_y": "number",
-      "from_x": "number",
-      "from_y": "number",
+    if (!this.#paramsMatchExpected(socket, params, {"type": "string"})) return;
+    switch (params.type) {
+      case "place":
+        let placeExpected = {"target_x": "number", "target_y": "number"};
+        if (!this.#paramsMatchExpected(socket, params, placeExpected)) return;
+        break;
+      case "move":
+        let moveExpected = {
+          "target_x": "number",
+          "target_y": "number",
+          "from_x": "number",
+          "from_y": "number",
+        };
+        if (!this.#paramsMatchExpected(socket, params, moveExpected)) return;
+        break;
+      case "end":
+        break;
+      default:
+        this.sendError(socket, "illegalMove", "You tried to make an illegal move!");
     }
-    if (!this.#paramsMatchExpected(socket, params, expected, optional)) return;
 
     const { playerName, lobby } = socket.data;
     
