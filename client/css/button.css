@@ -1,5 +1,9 @@
-button {
+button:active {
   cursor: pointer;
+}
+
+button:disabled {
+  cursor: default;
 }
 
 .btn {
