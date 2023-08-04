@@ -48,6 +48,10 @@ function init() {
   });
   document.getElementById("join-lobby").addEventListener("click", () => setMenuScreen("joining-lobby"));
 
+  for (let backBtn of document.querySelectorAll(".btn-back")) {
+    backBtn.addEventListener("click", () => setMenuScreen("main-menu"))
+  }
+
 }
 
 /**
