@@ -172,7 +172,7 @@ function moveStone(mouseDownEvent, gameState, myName, onMove) {
       let source = board[x][y];
       if (source && source.movable > 0 && source.player == myName) {
         selectedSource = [x, y];
-        d3.selectAll("g.movable").classed("moving", d => {console.log(d.x === x, d.y === y, d, x, y); return d.x === x && d.y === y})
+        d3.selectAll("g.movable").classed("moving", d => d.x === x && d.y === y)
       }
     }
   }
