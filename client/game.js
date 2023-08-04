@@ -15,7 +15,7 @@ let selectedSource = null;
 export function emptyGameState(boardSize) {
   const emptyGame = {
     board: [],
-    players: [""],
+    players: ["Red", "Blue", "Green", "Yellow"],
     currentPlayer: "",
     playerHasPlaced: true,
     gameIsOver: true,
