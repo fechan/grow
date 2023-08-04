@@ -17,6 +17,13 @@ module.exports = class Lobby {
     if (this.players.length === 0) {
       this.host = playerName;
     }
+
+    let counter = 1;
+    let playerNameBase = playerName;
+    while (this.players.includes(playerName)) {
+      counter++;
+      playerName = playerNameBase + counter;
+    }
     this.players.push(playerName);
 
     return playerName;
