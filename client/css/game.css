@@ -33,6 +33,11 @@
   stroke: white;
 }
 
+#game .stone.moving>circle {
+  filter: url(#back-glow-color);
+  stroke: lime;
+}
+
 #board {
   background-color: #e0bb6c;
   margin-top: 1rem;

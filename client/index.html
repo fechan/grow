@@ -37,6 +37,14 @@
                 <feMergeNode in="SourceGraphic"/>
             </feMerge>
           </filter>
+
+          <filter id="back-glow-color">
+            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+            <feMerge>
+                <feMergeNode in="coloredBlur"/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
         </defs>
       </svg>
     </div>
