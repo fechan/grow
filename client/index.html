@@ -23,7 +23,22 @@
         </template>
       </ol>
       <button id="end-turn" class="btn btn-danger btn-lg" disabled>End turn</button>
-      <svg id="board" width="800" height="800"></svg>
+      <svg id="board" width="800" height="800">
+        <defs>
+          <filter id="back-glow">
+            <feColorMatrix type="matrix" values=
+                        "1 0 0 0   1
+                         0 1 0 0   1
+                         0 0 1 0   1
+                         0 0 0 1   0"/>
+            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+            <feMerge>
+                <feMergeNode in="coloredBlur"/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+      </svg>
     </div>
 
     <div id="menu-modal" class="modal">

@@ -186,12 +186,12 @@ function updateCursor(mouseMoveEvent, gameState) {
   let [x, y] = getMouseBoardPos(mouseMoveEvent);
 
   let spaceInBoard = x in board && y in board;
-  let spaceHasPiece = board[x][y] !== null;
+  let spaceHasPiece = spaceInBoard && board[x][y] !== null;
   let spaceIsMovable = spaceHasPiece && board[x][y].movable > 0;
-  let canPlacePieceOnSpace = !playerHasPlaced && !spaceHasPiece
+  let canPlacePieceOnSpace = spaceInBoard && !playerHasPlaced && !spaceHasPiece
 
   let boardSVG = document.getElementById("board");
-  if (spaceInBoard && (spaceIsMovable || canPlacePieceOnSpace)) {
+  if (spaceIsMovable || canPlacePieceOnSpace) {
     boardSVG.classList.add("cursor-pointer");
   } else {
     boardSVG.classList.remove("cursor-pointer");
@@ -257,7 +257,7 @@ function updateBoard(gameState, myName, onPlace, onMove) {
           .attr("cx", d => d.x * PITCH + PADDING)
           .attr("cy", d => d.y * PITCH + PADDING)
           .attr("r", STONE_R)
-          .attr("fill", d => (d.heads > 0) ? COLORS[players.indexOf(d.player)] : d3.color(COLORS[players.indexOf(d.player)]).darker(.95))
+          .attr("fill", d => (d.heads > 0) ? COLORS[players.indexOf(d.player)] : d3.color(COLORS[players.indexOf(d.player)]).darker(1.5))
 
         stone.append("text")
           .text(d => d.heads <= 1 ? "" : d.heads)
@@ -271,7 +271,7 @@ function updateBoard(gameState, myName, onPlace, onMove) {
         update.classed("movable", d => d.movable > 0)
 
         update.select("circle")
-          .attr("fill", d => (d.heads > 0) ? COLORS[players.indexOf(d.player)] : d3.color(COLORS[players.indexOf(d.player)]).darker(.95))
+          .attr("fill", d => (d.heads > 0) ? COLORS[players.indexOf(d.player)] : d3.color(COLORS[players.indexOf(d.player)]).darker(1.5))
 
         update.select("text").text(d => d.heads <= 1 ? "" : d.heads)
 
@@ -279,4 +279,7 @@ function updateBoard(gameState, myName, onPlace, onMove) {
         },
       exit => exit.remove(),
       )
+
+  boardSVG.selectAll("g.stone.movable").raise();
+  
 }

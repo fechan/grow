@@ -29,12 +29,13 @@
 }
 
 #game .stone.movable>circle {
-  stroke: gold;
-  stroke-width: 3px;
+  filter: url(#back-glow);
+  stroke: white;
 }
 
 #board {
   background-color: #e0bb6c;
+  margin-top: 1rem;
 }
 
 #player-scores {
@@ -70,5 +71,4 @@
 
 #end-turn {
   width: 20rem !important;
-  margin: 1rem;
 }
