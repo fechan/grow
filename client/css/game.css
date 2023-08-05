@@ -37,6 +37,7 @@
 #game .growth-target>circle {
   filter: url(#back-glow);
   stroke: white;
+  cursor: pointer;
 }
 
 #game .stone.moving>circle {
