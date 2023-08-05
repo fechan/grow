@@ -28,7 +28,8 @@
   fill: white;
 }
 
-#game .stone.movable>circle {
+#game .stone.movable>circle,
+#game .stone.target>circle {
   filter: url(#back-glow);
   stroke: white;
 }
@@ -36,6 +37,10 @@
 #game .stone.moving>circle {
   filter: url(#back-glow-color);
   stroke: lime;
+}
+
+#game .stone.growth-target {
+  fill: #e0bb6c;
 }
 
 #board {

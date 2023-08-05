@@ -149,6 +149,14 @@ function hoverUnplacedPiece(mouseMoveEvent, gameState, myName, onPlace) {
   
 }
 
+/**
+ * Handle picking up and moving a stone, including UI hints/highlights for valid pick-up/drop targets
+ * @param {MouseEvent}  mouseDownEvent  Mouse event that triggered the stone move
+ * @param {Object}      gameState       Current game state
+ * @param {String}      myName          Name of client's player
+ * @param {Function}    onMove          Callback to run when a move is made
+ * @returns 
+ */
 function moveStone(mouseDownEvent, gameState, myName, onMove) {
   const { currentPlayer, board } = gameState;
 
@@ -157,28 +165,109 @@ function moveStone(mouseDownEvent, gameState, myName, onMove) {
   let [x, y] = getMouseBoardPos(mouseDownEvent);
   if (x in board && y in board[x]) {
     if (selectedSource) {
+      // reset UI hints/highlighting of targetable stones
       d3.select("g.moving").classed("moving", false)
-      d3.selectAll("g.stone").classed("movable", d => d.movable > 0)
+      d3.selectAll("g.growth-target").remove()
+      d3.selectAll("g.stone")
+        .classed("target", false)
+        .classed("movable", d => d.movable > 0)
+
+      // ignore move if target is the same as the source
       if (x == selectedSource[0] && y == selectedSource[1]) {
         selectedSource = null;
         return;
       }
+
+      // perform the move if otherwise allowed
       let target = board[x][y];
       if (target == null || target.player == myName) {
         let [fromX, fromY] = selectedSource;
         onMove(x, y, fromX, fromY);
       }
+
+      // clear selected source stone
       selectedSource = null;
+
     } else {
       let source = board[x][y];
       if (source && source.movable > 0 && source.player == myName) {
         selectedSource = [x, y];
+
+        // remove highlights for movable stones, only highlight selected source
         d3.selectAll("g.movable")
           .classed("moving", d => d.x === x && d.y === y)
           .classed("movable", false)
+
+        // calculate possible target stones
+        const {possibleHighwayTargets, possibleGrowthTargets} = getTargetStones(x, y, board, myName);
+
+        // highlight possible targets due to highway rule
+        d3.selectAll("g.stone")
+          .classed("target", d => possibleHighwayTargets[d.x + "," + d.y])
+
+        // highlight possible targets due to normal growth into adjacent empty space
+        d3.select("#board").selectAll("g.growth-target")
+          .data(possibleGrowthTargets)
+          .join(enter => {
+              let stone = enter.append("g")
+                .classed("target", true)
+                .classed("growth-target", true)
+                .classed("stone", true)
+            
+              stone.append("circle")
+                .attr("cx", d => d.x * PITCH + PADDING)
+                .attr("cy", d => d.y * PITCH + PADDING)
+                .attr("r", STONE_R)
+
+              return enter
+            })
       }
     }
   }
+}
+
+function getTargetStones(sourceX, sourceY, board, myName) {
+  // maps coordinate strings "x,y" to bool of whether it is a valid target
+  // this map's keys double as the `visited` nodes list in the graph search for the highway rule
+  const possibleHighwayTargets = {};
+  const searchMe = [];
+
+  // array of {x: x, y: y} coordinates for adjacent empty spaces (where you can grow into and score pts)
+  const possibleGrowthTargets = [];
+
+  // first check for adjacent open spaces
+  for (const [dx, dy] of [[-1,0] ,[1,0], [0,-1], [0,1]]) {
+    let [targetX, targetY] = [sourceX+dx, sourceY+dy];
+    if (targetX in board && targetY in board[targetX]) {
+      let target = board[targetX][targetY];
+      if (target === null) {
+        possibleGrowthTargets.push({x: targetX, y: targetY});
+      } else if (target.player === myName) {
+        searchMe.push([targetX, targetY]);
+      }
+    }
+  }
+
+  // do graph search
+  while (searchMe.length > 0) {
+    let [curX, curY] = searchMe.shift()
+    let isValid = board[curX][curY]?.player === myName && !(curX === sourceX && curY === sourceY);
+    possibleHighwayTargets[curX + "," + curY] = isValid;
+
+    if (isValid) {
+      // add all unvisited neighbors
+      for (const [dx, dy] of [[-1,0] ,[1,0], [0,-1], [0,1]]) {
+        let [targetX, targetY] = [curX+dx, curY+dy];
+        if (targetX in board && targetY in board[targetX]) {
+          if (!(targetX + "," + targetY in possibleHighwayTargets)) {
+            searchMe.push([targetX, targetY]);
+          }
+        }
+      }
+    }
+  }
+
+  return {possibleHighwayTargets, possibleGrowthTargets};
 }
 
 /**
