@@ -237,17 +237,17 @@ function updateBoard(gameState, myName, onPlace, onMove) {
 
   // horizontal lines
   boardSVG.selectAll("line.line-horizontal")
-  .data(Array(boardSize).keys(), d => "h" + d)
-  .join(
-    enter => enter.append("line")
-      .classed("line-horizontal", true)
-      .attr("y1", d => d * PITCH + PADDING)
-      .attr("x1", PADDING)
-      .attr("y2", d => d * PITCH + PADDING)
-      .attr("x2", boardSize * PITCH),
-    update => update.selection(),
-    exit => exit.remove(),
-    )
+    .data(Array(boardSize).keys(), d => "h" + d)
+    .join(
+      enter => enter.append("line")
+        .classed("line-horizontal", true)
+        .attr("y1", d => d * PITCH + PADDING)
+        .attr("x1", PADDING)
+        .attr("y2", d => d * PITCH + PADDING)
+        .attr("x2", boardSize * PITCH),
+      update => update.selection(),
+      exit => exit.remove(),
+      )
 
   // pieces
   boardSVG.selectAll("g.stone")
