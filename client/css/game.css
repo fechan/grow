@@ -2,7 +2,25 @@
   Styles for the Grow game state display. (Anything inside #game)
 */
 
-#game {
+@media (min-width: 1024px) {
+  #game {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+    gap: 2rem;
+  }
+
+  #player-scores {
+    grid-auto-flow: row !important;
+    margin: 0 !important;
+    margin-top: 5rem !important;
+
+    grid-template-rows: repeat(4, .1fr);
+    width: 10vw;
+  }
+}
+
+#game .main-control {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -62,6 +80,7 @@
   list-style: none;
   gap: 1em;
   padding: 0;
+  margin: 0 5rem;
 }
 
 #player-scores .player {
@@ -73,8 +92,6 @@
 
 #player-scores .score-label {
   font-size: x-small;
-  text-transform: uppercase;
-  margin-top: 1em;
 }
 
 #player-scores .score {
