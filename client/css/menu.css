@@ -2,6 +2,13 @@
   Styles for the menu modal
 */
 
+@media (prefers-color-scheme: dark) {
+  .modal-content {
+    background-color: hsl(0, 0%, 15%) !important;
+    color: white;
+  }
+}
+
 .modal {
   display: flex;
   justify-content: center;
@@ -54,6 +61,7 @@
   border-radius: .3rem;
   font-size: xx-large;
   background-color: white;
+  padding: .2em .8em;
 }
 
 #lobby-code:hover {

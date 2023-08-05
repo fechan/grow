@@ -3,9 +3,22 @@
   Grow game state display itself.
 */
 
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: hsl(0, 0%, 15%) !important;
+    color: white;
+  }
+
+  input {
+    background-color: hsl(0, 0%, 20%);
+    color: white;
+  }
+}
+
 body {
   margin: 0;
   font-family: sans-serif;
+  background-color: ivory;
 }
 
 h1 {
