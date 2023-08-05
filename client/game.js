@@ -294,10 +294,11 @@ function updateCursor(mouseMoveEvent, gameState, myName) {
   let myTurn = currentPlayer == myName;
   let spaceInBoard = x in board && y in board;
   let spaceHasPiece = spaceInBoard && board[x][y] !== null;
+  let spaceIsMovable = spaceHasPiece && board[x][y].movable > 0;
   let canPlacePieceOnSpace = spaceInBoard && !playerHasPlaced && !spaceHasPiece
 
   let boardSVG = document.getElementById("board");
-  if (myTurn && canPlacePieceOnSpace) {
+  if (myTurn && (spaceIsMovable || canPlacePieceOnSpace)) {
     boardSVG.classList.add("cursor-pointer");
   } else {
     boardSVG.classList.remove("cursor-pointer");
