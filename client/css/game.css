@@ -14,6 +14,10 @@
   stroke-width: 2;
 }
 
+#game .stone>circle {
+  transition: stroke .1s, filter .1s;
+}
+
 #game .stone>circle,
 #game .unplaced-stone>circle {
   stroke: black;
@@ -29,7 +33,8 @@
 }
 
 #game .stone.movable>circle,
-#game .stone.target>circle {
+#game .stone.target>circle,
+#game .growth-target>circle {
   filter: url(#back-glow);
   stroke: white;
 }
@@ -39,8 +44,9 @@
   stroke: lime;
 }
 
-#game .stone.growth-target {
+#game .growth-target {
   fill: #e0bb6c;
+  opacity: 60%;
 }
 
 #board {

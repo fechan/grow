@@ -212,15 +212,16 @@ function moveStone(mouseDownEvent, gameState, myName, onMove) {
               let stone = enter.append("g")
                 .classed("target", true)
                 .classed("growth-target", true)
-                .classed("stone", true)
             
               stone.append("circle")
                 .attr("cx", d => d.x * PITCH + PADDING)
                 .attr("cy", d => d.y * PITCH + PADDING)
                 .attr("r", STONE_R)
 
-              return enter
+              return stone
             })
+
+        d3.selectAll("g.stone").raise();
       }
     }
   }
