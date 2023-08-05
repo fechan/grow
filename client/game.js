@@ -226,13 +226,23 @@ function moveStone(mouseDownEvent, gameState, myName, onMove) {
   }
 }
 
+/**
+ * Get possible target stones for the given source stone that is being moved
+ * @param {Number}    sourceX X coordinate of stone being moved
+ * @param {Number}    sourceY Y coordinate of stone being moved
+ * @param {Object[]}  board Board state
+ * @param {String}    myName Name of client's player
+ * @returns {Object} An Object containing possible targets due to highway/growth rules. See top of function definition for clarification
+ */
 function getTargetStones(sourceX, sourceY, board, myName) {
-  // maps coordinate strings "x,y" to bool of whether it is a valid target
+  // NOTE: `possibleHighwayTargets` is part of the return value!
+  // It maps coordinate strings "x,y" to bool of whether it is a valid target
   // this map's keys double as the `visited` nodes list in the graph search for the highway rule
   const possibleHighwayTargets = {};
   const searchMe = [];
 
-  // array of {x: x, y: y} coordinates for adjacent empty spaces (where you can grow into and score pts)
+  // NOTE: `possibleGrowthTargets` is part of the return value!
+  // It is an array of {x: x, y: y} coordinates for adjacent empty spaces (where you can grow into and score pts)
   const possibleGrowthTargets = [];
 
   // first check for adjacent open spaces
