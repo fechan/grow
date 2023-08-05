@@ -49,10 +49,12 @@ function init() {
   });
 
   document.getElementById("submit-nickname-join").addEventListener("click", () => {
-    let lobby = document.getElementById("lobby-code-input").value;
+    const lobbyCodeInput =  document.getElementById("lobby-code-input");
+    const lobby = lobbyCodeInput.value;
     let playerName = document.getElementById("nickname-join").value;
     playerName = playerName == "" ? "anonymous" : playerName;
     socket.emit("joinLobby", {"playerName": playerName, "lobby": lobby})
+    lobbyCodeInput.value = "";
   });
   document.getElementById("join-lobby").addEventListener("click", () => setMenuScreen("joining-lobby"));
 
@@ -145,10 +147,11 @@ function updatePlayerList(players, host, myName) {
   for (let player of players) {
     let playerNode = playerTemplate.content.cloneNode(true);
     let playerLi = playerNode.querySelector("li");
-    playerLi.append(document.createTextNode(player));
-    if (host == player) playerLi.append(document.createTextNode("(HOST)"));
-    if (myName == player) playerLi.append(document.createTextNode("(YOU)"));
     playerList.append(playerNode);
+
+    playerLi.append(document.createTextNode(player));
+    if (host == player) playerLi.append(document.createTextNode(" (host)"));
+    if (myName == player) playerLi.append(document.createTextNode(" (you)"));
   }
 }
 

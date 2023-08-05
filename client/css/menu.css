@@ -76,3 +76,9 @@
   font-size: small;
   margin-bottom: .1em;
 }
+
+#lobby-player-list {
+  list-style: none;
+  padding: 0;
+  margin-top: .25em;
+}
