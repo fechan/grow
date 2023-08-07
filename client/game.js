@@ -54,10 +54,17 @@ export function update(gameState, myName, onPlace, onMove) {
  * @param {String} myName     Name of the client's player
  */
 function updateEndTurnBtn(gameState, myName) {
-  const { currentPlayer, scores, gameIsOver } = gameState;
+  const { currentPlayer, scores, gameIsOver, playerHasPlaced } = gameState;
 
   let enableEndTurn = !gameIsOver && currentPlayer === myName && scores[myName] > 0;
-  document.getElementById("end-turn").disabled = !enableEndTurn;
+  let endTurnBtn = document.getElementById("end-turn");
+  endTurnBtn.disabled = !enableEndTurn;
+
+  if (playerHasPlaced) {
+    endTurnBtn.classList.remove("btn-danger");
+  } else {
+    endTurnBtn.classList.add("btn-danger");
+  }
 }
 
 /**
