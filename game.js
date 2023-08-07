@@ -88,6 +88,7 @@ module.exports = class GrowGame {
             source.heads--;
             if (target === null) {
               this.board[target_x][target_y] = {player: player, heads: 1, movable: 0, x: target_x, y: target_y};
+              this.openSpaces--;
             } else {
               target.heads++;
             }

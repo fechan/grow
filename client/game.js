@@ -47,15 +47,16 @@ export function update(gameState, myName, onPlace, onMove) {
 /**
  * Enable/disable the end turn button based on the game state
  * 
- * You can only end turn iff: it's your turn AND
+ * You can only end turn iff: the game is not over AND
+ * it's your turn AND
  * it's not the first turn (where you must place a stone/score a point)
  * @param {Object} gameState  Game state
  * @param {String} myName     Name of the client's player
  */
 function updateEndTurnBtn(gameState, myName) {
-  const { currentPlayer, scores } = gameState;
+  const { currentPlayer, scores, gameIsOver } = gameState;
 
-  let enableEndTurn = currentPlayer === myName && scores[myName] > 0;
+  let enableEndTurn = !gameIsOver && currentPlayer === myName && scores[myName] > 0;
   document.getElementById("end-turn").disabled = !enableEndTurn;
 }
 
@@ -158,9 +159,9 @@ function hoverUnplacedPiece(mouseMoveEvent, gameState, myName, onPlace) {
  * @returns 
  */
 function moveStone(mouseDownEvent, gameState, myName, onMove) {
-  const { currentPlayer, board } = gameState;
+  const { currentPlayer, board, gameIsOver } = gameState;
 
-  if (myName !== currentPlayer) return;
+  if (gameIsOver || myName !== currentPlayer) return;
 
   let [x, y] = getMouseBoardPos(mouseDownEvent);
   if (x in board && y in board[x]) {
@@ -288,7 +289,7 @@ function getTargetStones(sourceX, sourceY, board, myName) {
  * @param {String}     myName         Name of client's player
  */
 function updateCursor(mouseMoveEvent, gameState, myName) {
-  let { board, playerHasPlaced, currentPlayer } = gameState;
+  let { board, playerHasPlaced, currentPlayer, gameIsOver } = gameState;
   let [x, y] = getMouseBoardPos(mouseMoveEvent);
 
   let myTurn = currentPlayer == myName;
@@ -298,7 +299,7 @@ function updateCursor(mouseMoveEvent, gameState, myName) {
   let canPlacePieceOnSpace = spaceInBoard && !playerHasPlaced && !spaceHasPiece
 
   let boardSVG = document.getElementById("board");
-  if (myTurn && (spaceIsMovable || canPlacePieceOnSpace)) {
+  if (!gameIsOver && myTurn && (spaceIsMovable || canPlacePieceOnSpace)) {
     boardSVG.classList.add("cursor-pointer");
   } else {
     boardSVG.classList.remove("cursor-pointer");
@@ -331,7 +332,9 @@ function updateBoard(gameState, myName, onPlace, onMove) {
         .attr("y1", PADDING)
         .attr("x2", d => d * PITCH + PADDING)
         .attr("y2", boardSize * PITCH),
-      update => update.selection(),
+      update => update.selection()
+        .attr("x2", d => d * PITCH + PADDING)
+        .attr("y2", boardSize * PITCH),
       exit => exit.remove(),
       )
 
@@ -345,7 +348,9 @@ function updateBoard(gameState, myName, onPlace, onMove) {
         .attr("x1", PADDING)
         .attr("y2", d => d * PITCH + PADDING)
         .attr("x2", boardSize * PITCH),
-      update => update.selection(),
+      update => update.selection()
+        .attr("y2", d => d * PITCH + PADDING)
+        .attr("x2", boardSize * PITCH),
       exit => exit.remove(),
       )
 
@@ -375,7 +380,7 @@ function updateBoard(gameState, myName, onPlace, onMove) {
         return stone;
         },
       update => {
-        update.classed("movable", d => d.movable > 0)
+        update.classed("movable", d => !gameIsOver && d.movable > 0)
 
         update.select("circle")
           .attr("fill", d => (d.heads > 0) ? COLORS[players.indexOf(d.player)] : d3.color(COLORS[players.indexOf(d.player)]).darker(1.5))
