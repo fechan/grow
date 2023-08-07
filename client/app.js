@@ -28,7 +28,7 @@ function init() {
     let { gameState } = params;
 
     if ("boardChanges" in gameState) {
-      moveSfx.play();
+      moveSfx.cloneNode().play();
       applyBoardChanges(lastGameState.board, gameState.boardChanges)
       gameState.board = lastGameState.board;
     }
