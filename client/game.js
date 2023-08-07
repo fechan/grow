@@ -1,7 +1,7 @@
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 
 const PITCH = 50;
-const STONE_R = PITCH / 2;
+const STONE_R = PITCH / 2 - 2;
 const PADDING = 50;
 export const COLORS = ["red", "blue", "green", "yellow"];
 
