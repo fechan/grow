@@ -5,6 +5,8 @@ function init() {
   let lastGameState = game.emptyGameState(15);
   game.update(lastGameState);
 
+  let moveSfx = new Audio("./sfx/Move.ogg");
+
   let socket = io();
 
   socket.on("lobbyJoined", params => {
@@ -26,6 +28,7 @@ function init() {
     let { gameState } = params;
 
     if ("boardChanges" in gameState) {
+      moveSfx.play();
       applyBoardChanges(lastGameState.board, gameState.boardChanges)
       gameState.board = lastGameState.board;
     }
