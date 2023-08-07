@@ -10,7 +10,7 @@ module.exports = class Lobby {
   }
 
   startGame() {
-    this.game = new Game(2, shuffle(this.players.slice()));
+    this.game = new Game(15, shuffle(this.players.slice()));
   }
 
   addPlayer(playerName) {
