@@ -283,7 +283,11 @@ function getTargetStones(sourceX, sourceY, board, myName) {
       // add all unvisited neighbors
       for (const [dx, dy] of [[-1,0] ,[1,0], [0,-1], [0,1]]) {
         let [targetX, targetY] = [curX+dx, curY+dy];
-        if (targetX in board && targetY in board[targetX]) {
+        let targetInBounds = targetX in board && targetY in board[targetX];
+        let targetIsEmpty = targetInBounds && board[targetX][targetY] == null;
+        let targetIsSource = targetX != sourceX && targetY != sourceY;
+
+        if (targetInBounds && !targetIsSource && !targetIsEmpty) {
           if (!(targetX + "," + targetY in possibleHighwayTargets)) {
             searchMe.push([targetX, targetY]);
           }
