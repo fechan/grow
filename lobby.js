@@ -30,7 +30,7 @@ module.exports = class Lobby {
   }
 
   removePlayer(playerName) {
-    this.players.splice(this.players.indexOf(playerName));
+    this.players.splice(this.players.indexOf(playerName), 1);
     if (this.host === playerName && this.players.length > 0) {
       this.host = this.players[0];
     }
