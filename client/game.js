@@ -269,6 +269,7 @@ function getTargetStones(sourceX, sourceY, board, myName) {
         possibleGrowthTargets.push({x: targetX, y: targetY});
       } else if (target.player === myName) {
         searchMe.push([targetX, targetY]);
+        possibleHighwayTargets[targetX + "," + targetY] = true;
       }
     }
   }
@@ -276,27 +277,35 @@ function getTargetStones(sourceX, sourceY, board, myName) {
   // do graph search
   while (searchMe.length > 0) {
     let [curX, curY] = searchMe.shift()
-    let isValid = board[curX][curY]?.player === myName && !(curX === sourceX && curY === sourceY);
-    possibleHighwayTargets[curX + "," + curY] = isValid;
 
-    if (isValid) {
-      // add all unvisited neighbors
-      for (const [dx, dy] of [[-1,0] ,[1,0], [0,-1], [0,1]]) {
-        let [targetX, targetY] = [curX+dx, curY+dy];
-        let targetInBounds = targetX in board && targetY in board[targetX];
-        let targetIsEmpty = targetInBounds && board[targetX][targetY] == null;
-        let targetIsSource = targetX != sourceX && targetY != sourceY;
-
-        if (targetInBounds && !targetIsSource && !targetIsEmpty) {
-          if (!(targetX + "," + targetY in possibleHighwayTargets)) {
-            searchMe.push([targetX, targetY]);
-          }
-        }
+    for (const [dx, dy] of [[-1,0] ,[1,0], [0,-1], [0,1]]) {
+      const [targetX, targetY] = [curX+dx, curY+dy];
+      const targetVisited = (targetX + "," + targetY) in possibleHighwayTargets;
+      if (!targetVisited && spaceIsValidAndBelongsToPlayer(targetX, targetY, myName, board)) {
+        searchMe.push([targetX, targetY]);
+        possibleHighwayTargets[targetX + "," + targetY] = true;
       }
     }
+  
   }
 
   return {possibleHighwayTargets, possibleGrowthTargets};
+}
+
+/**
+ * Determine if the target space exists on the board and has a stone belonging to the given player
+ * @param {Number} targetX  Target X coordinate
+ * @param {Number} targetY  Target Y coordiante
+ * @param {String} myName   Name of player
+ * @param {Object} board    Board state
+ * @returns {Boolean} True if the target meets the criteria
+ */
+function spaceIsValidAndBelongsToPlayer(targetX, targetY, myName, board) {
+  const targetInBoard = (targetX in board) && (targetY in board[targetX]);
+  const targetHasStone = targetInBoard && board[targetX][targetY] !== null;
+  const targetBelongsToPlayer = targetHasStone && board[targetX][targetY].player === myName;
+
+  return targetBelongsToPlayer;
 }
 
 /**
