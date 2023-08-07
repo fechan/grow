@@ -66,19 +66,25 @@ function updateEndTurnBtn(gameState, myName) {
  */
 function updatePlayers(gameState) {
   let { scores, players, currentPlayer } = gameState;
-  let playerList = document.getElementById("player-scores");
-  playerList.querySelectorAll(".player").forEach(e => e.remove());
+  let playerLists = document.querySelectorAll(".player-scores");
+  for (let playerList of playerLists) {
+    playerList.querySelectorAll(".player").forEach(e => e.remove());
 
-  let playerTemplate = document.querySelector(".player-template");
+    let playerTemplate = playerList.querySelector(".player-template");
 
-  for (let [i, player] of players.entries()) {
-    let playerNode = playerTemplate.content.cloneNode(true);
-    let playerLi = playerNode.querySelector("li");
-    playerLi.querySelector(".name").textContent = player;
-    playerLi.querySelector(".color").textContent = COLORS[i];
-    playerLi.querySelector(".score").textContent = scores[player] ?? 0;
-    if (player === currentPlayer) playerLi.classList.add("current-player");
-    playerList.append(playerNode);
+    let orderedPlayers = Array.from(players.entries());
+    orderedPlayers.forEach(entry => entry[0] = COLORS[entry[0]]);
+    if (playerList.dataset.sort === "score")  orderedPlayers.sort((a, b) => scores[b[1]] - scores[a[1]]);
+
+    for (let [color, player] of orderedPlayers) {
+      let playerNode = playerTemplate.content.cloneNode(true);
+      let playerLi = playerNode.querySelector("li");
+      playerLi.querySelector(".name").textContent = player;
+      playerLi.querySelector(".color").textContent = color;
+      playerLi.querySelector(".score").textContent = scores[player] ?? 0;
+      if (player === currentPlayer) playerLi.classList.add("current-player");
+      playerList.append(playerNode);
+    }
   }
 }
 

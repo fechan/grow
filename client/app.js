@@ -32,7 +32,12 @@ function init() {
     game.update(gameState, myName, onPlace, onMove);
     lastGameState = gameState;
 
-    document.getElementById("menu-modal").classList.add("hidden");
+    if (gameState.gameIsOver) {
+      document.getElementById("menu-modal").classList.remove("hidden");
+      setMenuScreen("game-over");
+    } else {
+      document.getElementById("menu-modal").classList.add("hidden");
+    }
   });
 
   document.getElementById("end-turn").addEventListener("click", () => socket.emit("playMove", {player: myName, type: "end"}));
@@ -57,8 +62,10 @@ function init() {
     lobbyCodeInput.value = "";
   });
   document.getElementById("join-lobby").addEventListener("click", () => setMenuScreen("joining-lobby"));
+  
+  document.querySelectorAll(".btn-leave").forEach(btn => btn.addEventListener("click", () => socket.emit("leave")));
 
-  document.getElementById("leave-lobby").addEventListener("click", () => socket.emit("leave"))
+  document.getElementById("btn-lobby").addEventListener("click", () => setMenuScreen("lobby"));
 
   document.getElementById("lobby-code").addEventListener("click", (e) => {
     navigator.clipboard.writeText(e.target.textContent).then(

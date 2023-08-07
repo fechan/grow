@@ -14,7 +14,7 @@
   <h1>The Game of Grow</h1>
   <main id="game">
     <div id="game">
-      <ol id="player-scores">
+      <ol id="player-scores" class="player-scores">
         <template class="player-template">
           <li class="player">
             <div><span class="name"></span> (<span class="color"></span>)</div>
@@ -102,12 +102,34 @@
               <template class="player-template"><li class="player"></li></template>
             </ul>
           </section>
+
           <section>
             <button id="start-game" class="hidden btn btn-lg">Start game</button>
             <span id="waiting-for-host">Waiting for host to start the game...</span>
           </section>
-          <button id="leave-lobby" class="btn btn-back">Leave lobby</button>
+          <button class="btn btn-back btn-leave">Leave lobby</button>
         </div>
+
+        <div id="game-over" class="hidden menu-screen">
+          <header>
+            <h2>Game over!</h2>
+          </header>
+
+          <ol id="player-scores-end" class="player-scores" data-sort="score">
+            <template class="player-template">
+              <li class="player">
+                <div class="row">
+                  <span><span class="name"></span> (<span class="color"></span>)</span>
+                  <span><span class="score"></span> <span class="score-label">points</span></span>
+                </div>
+              </li>
+            </template>
+          </ol>
+
+          <button id="btn-lobby" class="btn btn-lg">Back to lobby</button>
+          <button id="leave-lobby" class="btn btn-back btn-leave">Leave lobby</button>
+        </div>
+
       </div>
     </div>
   </main>
