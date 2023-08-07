@@ -310,7 +310,7 @@ function updateCursor(mouseMoveEvent, gameState, myName) {
  * @param {Object}    gameState Game state
  * @param {String}    myName    Name of the client's player
  * @param {Function}  onPlace   Callback to run when a stone is placed
- * @param {Function}  onPlace   Callback to run when a stone is moved
+ * @param {Function}  onMove    Callback to run when a stone is moved
  */
 function updateBoard(gameState, myName, onPlace, onMove) {
   const { players, board, currentPlayer, playerHasPlaced, gameIsOver, scores } = gameState;
