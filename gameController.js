@@ -34,7 +34,8 @@ module.exports = class GameController {
     const lobby = this.lobbies[lobbyToJoin];
 
     if (lobby == undefined) {
-      this.sendError(socket, "lobbyNotFound", `Lobby with code ${lobbyToJoin} not found!`)
+      this.sendError(socket, "lobbyNotFound", `Lobby with code ${lobbyToJoin} not found!`);
+      return;
     }
 
     const playerName = lobby.addPlayer(params.playerName);
