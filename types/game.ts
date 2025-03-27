@@ -1,3 +1,8 @@
+export interface Coordinate {
+  x: number,
+  y: number,
+}
+
 /**
  * A stone stack on the board that can have one or more stones
  */

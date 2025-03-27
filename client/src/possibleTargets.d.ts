@@ -1,9 +1,4 @@
-import { Board } from '../../types/game'
-
-interface Coordinate {
-  x: number,
-  y: number,
-}
+import { Board, Coordinate } from '../../types/game'
 
 /**
  * Object representing possible movement targets for a selected stone, for both
@@ -22,18 +17,16 @@ interface TargetStones {
   possibleGrowthTargets: Coordinate[],
 }
 
-declare module possibleTargets {
-  /**
-   * Get possible target stones for the given source stone that is being moved
-   * @param sourceX X coordinate of stone being moved
-   * @param sourceY Y coordinate of stone being moved
-   * @param board Board state
-   * @param myName Name of client's player
-   */
-  export function getTargetStones(
-    sourceX: number,
-    sourceY: number,
-    board: Board,
-    myName: string,
-  ): TargetStones;
-};
+/**
+ * Get possible target stones for the given source stone that is being moved
+ * @param sourceX X coordinate of stone being moved
+ * @param sourceY Y coordinate of stone being moved
+ * @param board Board state
+ * @param myName Name of client's player
+ */
+export declare function getTargetStones(
+  sourceX: number,
+  sourceY: number,
+  board: Board,
+  myName: string,
+): TargetStones;

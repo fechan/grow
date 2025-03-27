@@ -1,4 +1,5 @@
-import { StoneStack } from "../../../types/game";
+import { Dispatch } from "react";
+import { Coordinate, StoneStack } from "../../../types/game";
 import { sizes } from "./BoardDisplay";
 
 const colors = [
@@ -12,12 +13,28 @@ interface StoneStackDisplayProps {
   stack: StoneStack,
   players: string[],
   ghost: boolean,
-  onClick: (event: React.MouseEvent) => void,
+  isSelected: boolean,
+  isPossibleTarget: boolean,
+  onSelect: () => void,
+  onDeselect: () => void,
+  onTarget: () => void,
 };
 
-export function StoneStackDisplay({ stack, players, ghost, onClick }: StoneStackDisplayProps) {
+export function StoneStackDisplay({ stack, players, ghost, isSelected, isPossibleTarget, onSelect, onDeselect, onTarget }: StoneStackDisplayProps) {
   const type = stack.heads > 0 ? 'head' : 'tail';
   const color = colors[players.indexOf(stack.player)][type];
+
+  function onClick(event: React.MouseEvent) {
+    event.stopPropagation();
+
+    if (isSelected) {
+      onDeselect();
+    } else if (isPossibleTarget) {
+      onTarget();
+    } else {
+      onSelect();
+    }
+  }
 
   return (
     <circle
@@ -25,8 +42,11 @@ export function StoneStackDisplay({ stack, players, ghost, onClick }: StoneStack
       cy={ stack.y * sizes.pitch + sizes.padding }
       r={ sizes.stoneRadius }
       className={
+        'stroke-width-2 ' +
         color + ' ' +
-        (ghost ?  'opacity-50': 'opacity-100')
+        (ghost ? 'opacity-50': 'opacity-100') + ' ' +
+        (isPossibleTarget ? 'stroke-white' : '') + ' ' + 
+        (isSelected ? '!stroke-green-500' : '') + ' '
       }
       onClick={ onClick }
     />
@@ -38,10 +58,10 @@ interface GhostStoneProps {
   y: number,
   currentPlayer: string,
   players: string[],
-  onClick: (event: React.MouseEvent) => void,
+  onPlace: () => void,
 }
 
-export function GhostStone({ x, y, currentPlayer, players, onClick }: GhostStoneProps) {
+export function GhostStone({ x, y, currentPlayer, players, onPlace }: GhostStoneProps) {
   return (
     <StoneStackDisplay
       stack={{
@@ -53,7 +73,11 @@ export function GhostStone({ x, y, currentPlayer, players, onClick }: GhostStone
       }}
       players={ players }
       ghost={ true }
-      onClick={ onClick }
+      isSelected={ false }
+      isPossibleTarget={ false }
+      onSelect={ onPlace }
+      onDeselect={ () => {} }
+      onTarget={ () => {} }
     />
   );
 }

@@ -48,3 +48,19 @@ export function getTargetStones(sourceX, sourceY, board, myName) {
 
   return {possibleHighwayTargets, possibleGrowthTargets};
 }
+
+/**
+ * Determine if the target space exists on the board and has a stone belonging to the given player
+ * @param {Number} targetX  Target X coordinate
+ * @param {Number} targetY  Target Y coordinate
+ * @param {String} myName   Name of player
+ * @param {Object} board    Board state
+ * @returns {Boolean} True if the target meets the criteria
+ */
+function spaceIsValidAndBelongsToPlayer(targetX, targetY, myName, board) {
+  const targetInBoard = (targetX in board) && (targetY in board[targetX]);
+  const targetHasStone = targetInBoard && board[targetX][targetY] !== null;
+  const targetBelongsToPlayer = targetHasStone && board[targetX][targetY].player === myName;
+
+  return targetBelongsToPlayer;
+}
