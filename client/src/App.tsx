@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import './App.css'
-import { Board } from '../../types/game'
+import { Board, GameState } from '../../types/game'
 
 // I'm ignoring type warnings for socket.io for now.
 // I wrote all the server without typescript a while ago and I'm writing the
@@ -14,8 +14,16 @@ import { BoardDisplay } from './components/BoardDisplay';
 function App() {
   const [isConnected, setIsConnected] = useState(socket.connected);
 
-  const [ board, setBoard ] = useState([[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,{"player":"a","heads":1,"movable":0,"x":4,"y":1},null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,{"player":"a","heads":1,"movable":1,"x":6,"y":3},null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null]] as Board);
-  const [ players, setPlayers ] = useState(['a'] as string[]);
+  const [ playerName, setPlayername ] = useState('Player');
+  const [ gameState, setGameState ] = useState({
+    board: [[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,{"player":"Player","heads":1,"movable":0,"x":4,"y":1},null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,{"player":"Player","heads":1,"movable":1,"x":6,"y":3},null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null]],
+    players: ["Player", "b"],
+    currentPlayer: "Player",
+    playerHasPlaced: true,
+    gameIsOver: true,
+    scores: {}
+  } as GameState);
+  const isCurrentPlayersTurn = playerName === gameState.currentPlayer;
 
   useEffect(() => {
     function onConnect() {
@@ -38,8 +46,10 @@ function App() {
   return (
     <>
       <BoardDisplay
-        board={ board }
-        players={ players }
+        board={ gameState.board }
+        players={ gameState.players }
+        currentPlayer={ gameState.currentPlayer }
+        isCurrentPlayersTurn={ isCurrentPlayersTurn }
       />
     </>
   )

@@ -14,3 +14,20 @@ export interface StoneStack {
  * A space can be accessed with `board[x][y]`.
  */
 export type Board = (StoneStack | null)[][];
+
+/**
+ * Map from player name to score
+ */
+export type Scores = {[key: string]: number};
+
+/**
+ * State of the Grow game at any point in time
+ */
+export interface GameState {
+  board: Board,
+  players: string[],
+  currentPlayer: string,
+  playerHasPlaced: boolean,
+  gameIsOver: boolean,
+  scores: Scores,
+}

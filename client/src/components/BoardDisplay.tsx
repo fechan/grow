@@ -1,5 +1,6 @@
+import { useState } from 'react';
 import { Board } from '../../../types/game';
-import { StoneStackDisplay } from './StoneStackDisplay';
+import { GhostStone, StoneStackDisplay } from './StoneStackDisplay';
 
 export const sizes = {
   pitch: 50,
@@ -10,11 +11,33 @@ export const sizes = {
 interface BoardDisplayProps {
   board: Board,
   players: string[],
+  currentPlayer: string,
+  isCurrentPlayersTurn: boolean,
 }
 
-export function BoardDisplay({ board, players }: BoardDisplayProps) {
+export function BoardDisplay({ board, players, currentPlayer, isCurrentPlayersTurn }: BoardDisplayProps) {
+  const [ hoveredSpace, setHoveredSpace ] = useState({
+    x: null as number | null,
+    y: null as number | null,
+  });
+
   const boardHeight = board[0].length;
   const boardWidth = board.length;
+
+  const showGhostStone = (
+    isCurrentPlayersTurn &&
+    hoveredSpace.x !== null && hoveredSpace.y !== null && // a space is being hovered?
+    hoveredSpace.x >= 0 && hoveredSpace.x < boardWidth && // in bounds of board width?
+    hoveredSpace.y >= 0 && hoveredSpace.y < boardHeight && // in bounds of board height?
+    board[hoveredSpace.x][hoveredSpace.y] === null // hovered space is empty?
+  )
+
+  function onMouseMove(event: React.MouseEvent<SVGSVGElement, MouseEvent>) {
+    setHoveredSpace({
+      x: Math.round((event.nativeEvent.offsetX - sizes.padding) / sizes.pitch),
+      y: Math.round((event.nativeEvent.offsetY - sizes.padding) / sizes.pitch),
+    });
+  }  
 
   return (
     <svg
@@ -23,6 +46,7 @@ export function BoardDisplay({ board, players }: BoardDisplayProps) {
       style={{
         backgroundColor: '#e0bb6c',
       }}
+      onMouseMove={ onMouseMove }
     >
       {
         [...Array(boardHeight)].map((_, i) =>
@@ -58,10 +82,20 @@ export function BoardDisplay({ board, players }: BoardDisplayProps) {
         board.flat().map(space => space ?
           <StoneStackDisplay
             stack={ space }
-            players={ players }            
+            players={ players }
+            ghost={ false }
           />
           : null
         )
+      }
+
+      { showGhostStone &&
+        <GhostStone
+          x={ hoveredSpace.x! }
+          y={ hoveredSpace.y! }
+          currentPlayer={ currentPlayer }
+          players={ players }
+        />
       }
     </svg>
   );
