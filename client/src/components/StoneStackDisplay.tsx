@@ -36,28 +36,43 @@ export function StoneStackDisplay({ stack, players, ghost, isSelected, isPossibl
     }
   }
 
+  // TODO: add styles for movable stones while no selection is happening
   function getFilter() {
     if (isSelected) return 'url(#back-glow-color)';
     if (isPossibleTarget) return 'url(#back-glow)';
   }
 
   return (
-    <circle
-      cx={ stack.x * sizes.pitch + sizes.padding }
-      cy={ stack.y * sizes.pitch + sizes.padding }
-      r={ sizes.stoneRadius }
-      style={
-        { filter: getFilter() }
+    <g className="cursor-pointer" onClick={ onClick }>
+      <circle
+        cx={ stack.x * sizes.pitch + sizes.padding }
+        cy={ stack.y * sizes.pitch + sizes.padding }
+        r={ sizes.stoneRadius }
+        style={
+          { filter: getFilter() }
+        }
+        className={
+          'stroke-2 ' +
+          color + ' ' +
+          (ghost ? 'opacity-50': 'opacity-100') + ' ' +
+          (isPossibleTarget ? 'stroke-white' : '') + ' ' +
+          (isSelected ? '!stroke-lime-400' : '') + ' '
+        }
+      />
+      { stack.heads > 1 &&
+        <text
+          x={ stack.x * sizes.pitch + sizes.padding }
+          y={ stack.y * sizes.pitch + sizes.padding }
+          className="align-baseline center fill-white stroke-white text-2xl"
+          style={{
+            textAnchor: 'middle',
+            dominantBaseline: 'middle',
+          }}
+        >
+          { stack.heads }
+        </text>
       }
-      className={
-        'stroke-2 ' +
-        color + ' ' +
-        (ghost ? 'opacity-50': 'opacity-100') + ' ' +
-        (isPossibleTarget ? 'stroke-white' : '') + ' ' + 
-        (isSelected ? '!stroke-lime-400' : '') + ' '
-      }
-      onClick={ onClick }
-    />
+    </g>
   );
 }
 
