@@ -36,17 +36,25 @@ export function StoneStackDisplay({ stack, players, ghost, isSelected, isPossibl
     }
   }
 
+  function getFilter() {
+    if (isSelected) return 'url(#back-glow-color)';
+    if (isPossibleTarget) return 'url(#back-glow)';
+  }
+
   return (
     <circle
       cx={ stack.x * sizes.pitch + sizes.padding }
       cy={ stack.y * sizes.pitch + sizes.padding }
       r={ sizes.stoneRadius }
+      style={
+        { filter: getFilter() }
+      }
       className={
-        'stroke-width-2 ' +
+        'stroke-2 ' +
         color + ' ' +
         (ghost ? 'opacity-50': 'opacity-100') + ' ' +
         (isPossibleTarget ? 'stroke-white' : '') + ' ' + 
-        (isSelected ? '!stroke-green-500' : '') + ' '
+        (isSelected ? '!stroke-lime-400' : '') + ' '
       }
       onClick={ onClick }
     />

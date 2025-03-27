@@ -22,9 +22,17 @@ interface BoardDisplayProps {
   currentPlayer: string,
   isCurrentPlayersTurn: boolean,
   onMoveStone: (targetX: number, targetY: number, fromX: number, fromY: number) => void,
+  onPlaceStone: (targetX: number, targetY: number) => void,
 }
 
-export function BoardDisplay({ board, players, currentPlayer, isCurrentPlayersTurn, onMoveStone }: BoardDisplayProps) {
+export function BoardDisplay({
+  board,
+  players,
+  currentPlayer,
+  isCurrentPlayersTurn,
+  onMoveStone,
+  onPlaceStone
+}: BoardDisplayProps) {
   const [ hoveredSpace, setHoveredSpace ] = useState(null as Coordinate | null);
   const [ selectedSpace, setSelectedSpace ] = useState(null as Coordinate | null);
 
@@ -118,6 +126,27 @@ export function BoardDisplay({ board, players, currentPlayer, isCurrentPlayersTu
           onPlace={ () => console.log("placing stone at", hoveredSpace.x, hoveredSpace.y) }
         />
       }
+
+      <defs>
+        <filter id="back-glow">
+          <feColorMatrix type="matrix" values="1 0 0 0   1
+                                               0 1 0 0   1
+                                               0 0 1 0   1
+                                               0 0 0 1   0"/>
+          <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+          <feMerge>
+            <feMergeNode in="coloredBlur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+        <filter id="back-glow-color">
+          <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+          <feMerge>
+            <feMergeNode in="coloredBlur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+      </defs>
     </svg>
   );
 }
