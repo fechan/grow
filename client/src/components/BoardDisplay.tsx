@@ -27,10 +27,10 @@ export function BoardDisplay({ board, players, currentPlayer, isCurrentPlayersTu
   const showGhostStone = (
     isCurrentPlayersTurn &&
     hoveredSpace.x !== null && hoveredSpace.y !== null && // a space is being hovered?
-    hoveredSpace.x >= 0 && hoveredSpace.x < boardWidth && // in bounds of board width?
-    hoveredSpace.y >= 0 && hoveredSpace.y < boardHeight && // in bounds of board height?
+    hoveredSpace.x in board && // in bounds of board width?
+    hoveredSpace.y in board[hoveredSpace.x] && // in bounds of board height?
     board[hoveredSpace.x][hoveredSpace.y] === null // hovered space is empty?
-  )
+  );
 
   function onMouseMove(event: React.MouseEvent<SVGSVGElement, MouseEvent>) {
     setHoveredSpace({
@@ -79,13 +79,12 @@ export function BoardDisplay({ board, players, currentPlayer, isCurrentPlayersTu
       }
 
       {
-        board.flat().map(space => space ?
+        board.flat().map(space => space &&
           <StoneStackDisplay
             stack={ space }
             players={ players }
             ghost={ false }
           />
-          : null
         )
       }
 
