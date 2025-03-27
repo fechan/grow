@@ -12,9 +12,10 @@ interface StoneStackDisplayProps {
   stack: StoneStack,
   players: string[],
   ghost: boolean,
+  onClick: (event: React.MouseEvent) => void,
 };
 
-export function StoneStackDisplay({ stack, players, ghost }: StoneStackDisplayProps) {
+export function StoneStackDisplay({ stack, players, ghost, onClick }: StoneStackDisplayProps) {
   const type = stack.heads > 0 ? 'head' : 'tail';
   const color = colors[players.indexOf(stack.player)][type];
 
@@ -27,6 +28,7 @@ export function StoneStackDisplay({ stack, players, ghost }: StoneStackDisplayPr
         color + ' ' +
         (ghost ?  'opacity-50': 'opacity-100')
       }
+      onClick={ onClick }
     />
   );
 }
@@ -36,9 +38,10 @@ interface GhostStoneProps {
   y: number,
   currentPlayer: string,
   players: string[],
+  onClick: (event: React.MouseEvent) => void,
 }
 
-export function GhostStone({x, y, currentPlayer, players}: GhostStoneProps) {
+export function GhostStone({ x, y, currentPlayer, players, onClick }: GhostStoneProps) {
   return (
     <StoneStackDisplay
       stack={{
@@ -50,6 +53,7 @@ export function GhostStone({x, y, currentPlayer, players}: GhostStoneProps) {
       }}
       players={ players }
       ghost={ true }
+      onClick={ onClick }
     />
   );
 }

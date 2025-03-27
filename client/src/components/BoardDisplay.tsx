@@ -13,9 +13,10 @@ interface BoardDisplayProps {
   players: string[],
   currentPlayer: string,
   isCurrentPlayersTurn: boolean,
+  onMoveStone: (targetX: number, targetY: number, fromX: number, fromY: number) => void,
 }
 
-export function BoardDisplay({ board, players, currentPlayer, isCurrentPlayersTurn }: BoardDisplayProps) {
+export function BoardDisplay({ board, players, currentPlayer, isCurrentPlayersTurn, onMoveStone }: BoardDisplayProps) {
   const [ hoveredSpace, setHoveredSpace ] = useState({
     x: null as number | null,
     y: null as number | null,
@@ -81,6 +82,7 @@ export function BoardDisplay({ board, players, currentPlayer, isCurrentPlayersTu
       {
         board.flat().map(space => space &&
           <StoneStackDisplay
+            key={ `stone-stack-${space.x}-${space.y}` }
             stack={ space }
             players={ players }
             ghost={ false }
