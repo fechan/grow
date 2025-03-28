@@ -52,7 +52,10 @@ export function BoardDisplay({
   const possibleTargets = selectedSpace && getTargetStones(selectedSpace.x, selectedSpace.y, board, currentPlayer);
 
   function onMouseMove(event: React.MouseEvent<SVGSVGElement, MouseEvent>) {
-    setHoveredSpace(getBoardSpace(event.nativeEvent.offsetX, event.nativeEvent.offsetY));
+    const newHoveredSpace = getBoardSpace(event.nativeEvent.offsetX, event.nativeEvent.offsetY);
+    if (hoveredSpace === null || newHoveredSpace.x !== hoveredSpace.x || newHoveredSpace.y !== hoveredSpace.y) {
+      setHoveredSpace(newHoveredSpace);
+    }
   }
 
   function onClick(event: React.MouseEvent<SVGSVGElement, MouseEvent>) {
