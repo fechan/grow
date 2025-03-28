@@ -115,7 +115,7 @@ export function BoardDisplay({
             isPossibleTarget={ possibleTargets === null ? false : `${stack.x},${stack.y}` in possibleTargets!.possibleHighwayTargets}
             onSelect={ () => setSelectedSpace({x: stack.x, y: stack.y}) }
             onDeselect={ () => setSelectedSpace(null) }
-            onTarget={ () => console.log("target selected", stack.x, stack.y) }
+            onTarget={ () => onMoveStone(stack.x, stack.y, selectedSpace!.x, selectedSpace!.y) }
           />
         )
       }
@@ -126,7 +126,7 @@ export function BoardDisplay({
           y={ hoveredSpace.y! }
           currentPlayer={ currentPlayer }
           players={ players }
-          onPlace={ () => console.log("placing stone at", hoveredSpace.x, hoveredSpace.y) }
+          onPlace={ () => onPlaceStone(hoveredSpace.x, hoveredSpace.y) }
         />
       }
 
@@ -136,7 +136,7 @@ export function BoardDisplay({
             key={ `growth-target-${space.x}-${space.y}` }
             x={ space.x }
             y={ space.y }
-            onTarget={ () => console.log("target selected", space.x, space.y) }
+            onTarget={ () => onMoveStone(space.x, space.y, selectedSpace!.x, selectedSpace!.y) }
           />
         ))
       }

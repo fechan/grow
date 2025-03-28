@@ -50,6 +50,8 @@ function App() {
         players={ gameState.players }
         currentPlayer={ gameState.currentPlayer }
         isCurrentPlayersTurn={ isCurrentPlayersTurn }
+        onMoveStone={ (toX, toY, fromX, fromY) => console.log(`Moving from ${fromX} ${fromY} to ${toX} ${toY}`) }
+        onPlaceStone={ (x, y) => console.log(`Placing at ${x} ${y}`) }
       />
     </>
   )
