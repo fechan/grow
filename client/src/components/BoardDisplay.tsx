@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Board, Coordinate } from '../../../types/game';
-import { GhostStone, StoneStackDisplay } from './StoneStackDisplay';
 import { getTargetStones } from '../possibleTargets';
+import { GhostStone, GrowthTarget, StoneStackDisplay } from './StoneStackDisplay';
 
 export const sizes = {
   pitch: 50,
@@ -125,6 +125,17 @@ export function BoardDisplay({
           players={ players }
           onPlace={ () => console.log("placing stone at", hoveredSpace.x, hoveredSpace.y) }
         />
+      }
+
+      { possibleTargets?.possibleGrowthTargets &&
+        possibleTargets.possibleGrowthTargets.map(space => (
+          <GrowthTarget
+            key={ `growth-target-${space.x}-${space.y}` }
+            x={ space.x }
+            y={ space.y }
+            onTarget={ () => console.log("target selected", space.x, space.y) }
+          />
+        ))
       }
 
       <defs>

@@ -11,7 +11,7 @@ const colors = [
 
 interface StoneStackDisplayProps {
   stack: StoneStack,
-  players: string[],
+  players: string[] | null,
   ghost: boolean,
   isSelected: boolean,
   isPossibleTarget: boolean,
@@ -22,7 +22,7 @@ interface StoneStackDisplayProps {
 
 export function StoneStackDisplay({ stack, players, ghost, isSelected, isPossibleTarget, onSelect, onDeselect, onTarget }: StoneStackDisplayProps) {
   const type = stack.heads > 0 ? 'head' : 'tail';
-  const color = colors[players.indexOf(stack.player)][type];
+  const color = players ? colors[players.indexOf(stack.player)][type] : 'fill-transparent';
 
   function onClick(event: React.MouseEvent) {
     event.stopPropagation();
@@ -84,6 +84,9 @@ interface GhostStoneProps {
   onPlace: () => void,
 }
 
+/**
+ * The ghost stone that appears where you can drop a stone.
+ */
 export function GhostStone({ x, y, currentPlayer, players, onPlace }: GhostStoneProps) {
   return (
     <StoneStackDisplay
@@ -101,6 +104,36 @@ export function GhostStone({ x, y, currentPlayer, players, onPlace }: GhostStone
       onSelect={ onPlace }
       onDeselect={ () => {} }
       onTarget={ () => {} }
+    />
+  );
+}
+
+interface GrowthTargetProps {
+  x: number,
+  y: number,
+  onTarget: () => void,
+}
+
+/**
+ * A glowing target that appears if you can move a stone into an empty space.
+ */
+export function GrowthTarget({ x, y, onTarget }: GrowthTargetProps) {
+  return (
+    <StoneStackDisplay
+      stack={({
+        player: '',
+        heads: 0,
+        movable: 0,
+        x: x,
+        y: y,
+      })}
+      players={ null }
+      ghost={ false }
+      isSelected={ false }
+      isPossibleTarget={ true }
+      onSelect={ () => {} }
+      onDeselect={ () => {} }
+      onTarget={ onTarget }
     />
   );
 }
