@@ -10,6 +10,7 @@ import { GameState } from '../../types/game'
 // @ts-ignore
 import { socket } from './socket';
 import { BoardDisplay } from './components/BoardDisplay';
+import { Scoreboard } from './components/Scoreboard';
 
 function App() {
   const [isConnected, setIsConnected] = useState(socket.connected);
@@ -21,7 +22,7 @@ function App() {
     currentPlayer: "Player",
     playerHasPlaced: true,
     gameIsOver: true,
-    scores: {}
+    scores: {"Player": 5, "b": 10}
   } as GameState);
   const isCurrentPlayersTurn = playerName === gameState.currentPlayer;
 
@@ -44,16 +45,30 @@ function App() {
   }, []);
 
   return (
-    <>
-      <BoardDisplay
-        board={ gameState.board }
-        players={ gameState.players }
-        currentPlayer={ gameState.currentPlayer }
-        isCurrentPlayersTurn={ isCurrentPlayersTurn }
-        onMoveStone={ (toX, toY, fromX, fromY) => console.log(`Moving from ${fromX} ${fromY} to ${toX} ${toY}`) }
-        onPlaceStone={ (x, y) => console.log(`Placing at ${x} ${y}`) }
-      />
-    </>
+    <div className="flex items-center justify-center h-full flex-col bg-stone-800 text-white">
+      <header>
+        <h1 className="text-4xl font-bold">The Game of Grow</h1>
+      </header>
+      <div className="flex gap-5">
+        <main>
+          <BoardDisplay
+            board={ gameState.board }
+            players={ gameState.players }
+            currentPlayer={ gameState.currentPlayer }
+            isCurrentPlayersTurn={ isCurrentPlayersTurn }
+            onMoveStone={ (toX, toY, fromX, fromY) => console.log(`Moving from ${fromX} ${fromY} to ${toX} ${toY}`) }
+            onPlaceStone={ (x, y) => console.log(`Placing at ${x} ${y}`) }
+          />
+        </main>
+        <aside className='flex flex-col gap-3'>
+          <Scoreboard
+            players={ gameState.players }
+            currentPlayer={ gameState.currentPlayer }
+            scores={ gameState.scores }
+          />
+        </aside>
+      </div>
+    </div>
   )
 }
 
