@@ -1,3 +1,5 @@
+export type MoveName = 'place' | 'move' | 'end';
+
 export interface Coordinate {
   x: number,
   y: number,
@@ -30,6 +32,15 @@ export type Scores = {[key: string]: number};
  */
 export interface GameState {
   board: Board,
+  players: string[],
+  currentPlayer: string,
+  playerHasPlaced: boolean,
+  gameIsOver: boolean,
+  scores: Scores,
+}
+
+export interface PartialGameState {
+  boardChanges: StoneStack[],
   players: string[],
   currentPlayer: string,
   playerHasPlaced: boolean,
