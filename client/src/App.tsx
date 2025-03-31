@@ -14,7 +14,7 @@ import { CreateGameMenu, JoinGameMenu, Lobby, MainMenu } from './components/Menu
 import { Modal } from './components/Modal';
 import { Scoreboard } from './components/Scoreboard';
 import { socket } from './socket';
-import { createLobby, startGame, startLobby, wsListen } from './socketController';
+import { createLobby, playMove, startGame, startLobby, wsListen } from './socketController';
 
 function App() {
   const [isConnected, setIsConnected] = useState(socket.connected);
@@ -75,8 +75,9 @@ function App() {
               players={ gameState.players }
               currentPlayer={ gameState.currentPlayer }
               isCurrentPlayersTurn={ isCurrentPlayersTurn }
-              onMoveStone={ (toX, toY, fromX, fromY) => console.log(`Moving from ${fromX} ${fromY} to ${toX} ${toY}`) }
-              onPlaceStone={ (x, y) => console.log(`Placing at ${x} ${y}`) }
+              playerHasPlaced={ gameState.playerHasPlaced }
+              onMoveStone={ (toX, toY, fromX, fromY) => playMove(socket, 'place', toX, toY, fromX, fromY) }
+              onPlaceStone={ (x, y) => playMove(socket, 'place', x, y) }
             />
           </main>
           <aside className='flex flex-col gap-3'>

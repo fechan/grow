@@ -1,8 +1,8 @@
 import { Dispatch } from "react";
 import { Socket } from "socket.io-client";
-import { CreateLobbyMessage } from '../../types/wsClientMessages';
+import { CreateLobbyMessage, PlayMoveMessage } from '../../types/wsClientMessages';
 import { GameStateChangedMessage, LobbyInfo, LobbyInfoChangedMessage, LobbyJoinedMessage } from '../../types/wsServerMessages';
-import { GameState, PartialGameState } from "../../types/game";
+import { GameState, MoveName, PartialGameState } from "../../types/game";
 
 
 export function wsListen(
@@ -29,11 +29,11 @@ export function wsListen(
         setGameState(params.gameState as GameState);
       } else if ('boardChanges' in params.gameState) {
         const partialState = params.gameState as PartialGameState;
-        const newState = {...gameState};
+        const newBoard = gameState.board;
         for (let changedStack of partialState.boardChanges) {
-          newState.board[changedStack.x][changedStack.y] = changedStack;
+          newBoard[changedStack.x][changedStack.y] = changedStack;
         }
-        setGameState(newState);
+        setGameState({ ...partialState, board: newBoard });
       }
     }
   } as {[eventName: string]: (...args: any[]) => void};
@@ -55,4 +55,21 @@ export function createLobby(socket: Socket, hostPlayerName: string) {
 
 export function startGame(socket: Socket) {
   socket.emit("startGame");
+}
+
+export function playMove(
+  socket: Socket,
+  type: MoveName,
+  targetX?: number,
+  targetY?: number,
+  fromX?: number,
+  fromY?: number
+) {
+  socket.emit("playMove", {
+    type: type,
+    target_x: targetX,
+    target_y: targetY,
+    from_x: fromX,
+    from_y: fromY,
+  } as PlayMoveMessage)
 }
