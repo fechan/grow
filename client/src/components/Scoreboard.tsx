@@ -15,7 +15,11 @@ export function Scoreboard({ players, scores, currentPlayer }: ScoreboardProps) 
             key={ player }
             className={ "border rounded p-3 text-center" + (player === currentPlayer ? " bg-yellow-500/30 " : "") }
           >
-            <h1 className="font-bold">{ player }</h1>
+            <h1 className="font-bold">
+              { player }
+              &nbsp;
+              ({ ['red', 'blue', 'green', 'yellow'][players.indexOf(player)] })
+            </h1>
             <p>Score: { scores[player] }</p>
           </section>
         ))

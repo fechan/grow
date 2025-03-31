@@ -3,7 +3,7 @@ import { GameState, PartialGameState } from "./game";
 export interface LobbyInfo {
   lobbyCode: string,
   players: string[],
-  host: PlaybackDirection,
+  host: string,
 }
 
 export interface LobbyJoinedMessage {

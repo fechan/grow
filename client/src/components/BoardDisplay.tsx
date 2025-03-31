@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Board, Coordinate } from '../../../types/game';
 import { getTargetStones } from '../possibleTargets';
 import { GhostStone, GrowthTarget, StoneStackDisplay } from './StoneStackDisplay';
+import { BoardGrid } from './boardParts/BoardGrid';
+import { GlowFilters } from './boardParts/GlowFilters';
 
 export const sizes = {
   pitch: 50,
@@ -79,34 +81,11 @@ export function BoardDisplay({
         onMouseMove={ onMouseMove }
         onClick={ onClick }
       >
-        {
-          [...Array(boardHeight)].map((_, i) =>
-            <line
-              key={ 'board-vline-' + i }
-              x1={ i * sizes.pitch + sizes.padding }
-              y1={ sizes.padding }
-              x2={ i * sizes.pitch + sizes.padding }
-              y2={ boardHeight * sizes.pitch }
-              style={{
-                stroke: "black",
-                strokeWidth: 2,
-              }}
-            />)
-        }
-        {
-          [...Array(boardWidth)].map((_, i) =>
-            <line
-              key={ 'board-hline-' + i }
-              x1={ sizes.padding }
-              y1={ i * sizes.pitch + sizes.padding }
-              x2={ boardWidth * sizes.pitch }
-              y2={ i * sizes.pitch + sizes.padding }
-              style={{
-                stroke: "black",
-                strokeWidth: 2,
-              }}
-            />)
-        }
+        <defs>
+          <GlowFilters />
+        </defs>
+        <BoardGrid boardHeight={ boardHeight } boardWidth={ boardWidth } />
+
         {
           board.flat().map(stack => stack &&
             <StoneStackDisplay
@@ -122,6 +101,7 @@ export function BoardDisplay({
             />
           )
         }
+        
         { showGhostStone &&
           <GhostStone
             x={ hoveredSpace.x! }
@@ -131,6 +111,7 @@ export function BoardDisplay({
             onPlace={ () => onPlaceStone(hoveredSpace.x, hoveredSpace.y) }
           />
         }
+
         { possibleTargets?.possibleGrowthTargets &&
           possibleTargets.possibleGrowthTargets.map(space => (
             <GrowthTarget
@@ -141,26 +122,6 @@ export function BoardDisplay({
             />
           ))
         }
-        <defs>
-          <filter id="back-glow">
-            <feColorMatrix type="matrix" values="1 0 0 0   1
-                                                 0 1 0 0   1
-                                                 0 0 1 0   1
-                                                 0 0 0 1   0"/>
-            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-            <feMerge>
-              <feMergeNode in="coloredBlur"/>
-              <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-          </filter>
-          <filter id="back-glow-color">
-            <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
-            <feMerge>
-              <feMergeNode in="coloredBlur"/>
-              <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-          </filter>
-        </defs>
       </svg>
     </>
   );
