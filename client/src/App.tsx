@@ -12,10 +12,14 @@ import { socket } from './socket';
 
 import { LobbyInfo } from '../../types/wsServerMessages';
 import { BoardDisplay } from './components/BoardDisplay';
-import { CreateGameMenu, JoinGameMenu, Lobby, MainMenu } from './components/Menu';
+import { MainMenu } from './components/menu/MainMenu';
+import { CreateGameMenu } from './components/menu/CreateGameMenu';
+import { JoinGameMenu } from './components/menu/JoinGameMenu';
+import { Lobby } from './components/menu/Lobby';
+import { HowToPlay } from './components/menu/HowToPlay';
 import { Modal } from './components/Modal';
 import { Scoreboard } from './components/Scoreboard';
-import { createLobby, playMove, startGame, wsListen } from './socketController';
+import { createLobby, joinLobby, playMove, startGame, wsListen } from './socketController';
 
 function App() {
   const [isConnected, setIsConnected] = useState(socket.connected);
@@ -36,16 +40,26 @@ function App() {
   const menus = {
     'main': <MainMenu
       onClickCreateGame={ () => setMenu('create') }
+      onClickJoinGame={ () => setMenu('join') }
+      onClickHowToPlay={ () => setMenu('howToPlay') }
     />,
     'create': <CreateGameMenu
-      onClickCreateGame={ () => createLobby(socket, playerName) }
+      onClickCreateGame={ (playerName) => { createLobby(socket, playerName); setPlayerName(playerName); } }
+      onClickBack={ () => setMenu('main') }
     />,
-    'join': <JoinGameMenu />,
+    'join': <JoinGameMenu
+      onClickJoinGame={ (lobby, playerName) => joinLobby(socket, lobby, playerName) }
+      onClickBack={ () => setMenu('main') }
+    />,
     'lobby': <Lobby
       lobbyInfo={ lobbyInfo! }
       currentPlayer={ playerName }
       onClickStartGame={ () => startGame(socket) }
+      onClickBack={ () => setMenu('main') }
     />,
+    'howToPlay': <HowToPlay
+      onClickBack={ () => setMenu('main') }
+    />
   };
   const menuElement = menu ? menus[menu] : undefined;
 

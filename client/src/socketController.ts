@@ -1,6 +1,6 @@
 import { Dispatch } from "react";
 import { Socket } from "socket.io-client";
-import { CreateLobbyMessage, PlayMoveMessage } from '../../types/wsClientMessages';
+import { CreateLobbyMessage, JoinLobbyMessage, PlayMoveMessage } from '../../types/wsClientMessages';
 import { GameStateChangedMessage, LobbyInfo, LobbyInfoChangedMessage, LobbyJoinedMessage } from '../../types/wsServerMessages';
 import { GameState, MoveName, PartialGameState } from "../../types/game";
 
@@ -51,6 +51,13 @@ export function wsListen(
 
 export function createLobby(socket: Socket, hostPlayerName: string) {
   socket.emit("createLobby", { hostPlayerName } as CreateLobbyMessage);
+}
+
+export function joinLobby(socket: Socket, lobby: string, playerName: string) {
+  socket.emit("joinLobby", {
+    lobby: lobby,
+    playerName: playerName,
+  } as JoinLobbyMessage);
 }
 
 export function startGame(socket: Socket) {
