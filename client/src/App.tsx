@@ -8,13 +8,14 @@ import './App.css';
 // socket.io messages. I just want to bang out something that works now, so I'm
 // leaving that for later. (https://socket.io/docs/v4/typescript/)
 // @ts-ignore
+import { socket } from './socket';
+
 import { LobbyInfo } from '../../types/wsServerMessages';
 import { BoardDisplay } from './components/BoardDisplay';
 import { CreateGameMenu, JoinGameMenu, Lobby, MainMenu } from './components/Menu';
 import { Modal } from './components/Modal';
 import { Scoreboard } from './components/Scoreboard';
-import { socket } from './socket';
-import { createLobby, playMove, startGame, startLobby, wsListen } from './socketController';
+import { createLobby, playMove, startGame, wsListen } from './socketController';
 
 function App() {
   const [isConnected, setIsConnected] = useState(socket.connected);
