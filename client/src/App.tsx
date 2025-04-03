@@ -21,9 +21,11 @@ import { Modal } from './components/Modal';
 import { Scoreboard } from './components/Scoreboard';
 import { createLobby, joinLobby, playMove, startGame, wsListen } from './socketController';
 import { EndTurnButton } from './components/EndTurnButton';
+import { SoundContext, useSounds } from './sfx';
 
 function App() {
   const [isConnected, setIsConnected] = useState(socket.connected);
+  const sounds = useSounds();
 
   const [ lobbyInfo, setLobbyInfo ] = useState(null as LobbyInfo | null);
   const [ playerName, setPlayerName ] = useState('Player');
@@ -76,46 +78,60 @@ function App() {
     setMenu,
     setLobbyInfo,
     gameState,
-    setGameState
-  ), [socket, setIsConnected, setMenu, setLobbyInfo, gameState, setGameState]);
+    setGameState,
+    playerName,
+    sounds
+  ),
+  [
+    socket,
+    setIsConnected,
+    setMenu,
+    setLobbyInfo,
+    gameState,
+    setGameState,
+    playerName,
+    sounds
+  ]);
 
   return (
     <>
-      { menu &&
-        <Modal>
-          { menuElement }
-        </Modal>
-      }
-      <div className="flex items-center justify-center h-full flex-col bg-stone-800 text-white">
-        <header>
-          <h1 className="text-4xl font-bold">The Game of Grow</h1>
-        </header>
-        <main className="flex flex-col gap-3">
-          <EndTurnButton
-            onEndTurn={ () => playMove(socket, 'end') }
-            isCurrentPlayersTurn={ isCurrentPlayersTurn }
-            playerHasPlaced={ gameState.playerHasPlaced }
-          />
-          <div className="flex flex-col md:flex-row gap-3">
-            <BoardDisplay
-              board={ gameState.board }
-              players={ gameState.players }
-              currentPlayer={ gameState.currentPlayer }
+      <SoundContext.Provider value={ sounds }>
+        { menu &&
+          <Modal>
+            { menuElement }
+          </Modal>
+        }
+        <div className="flex items-center justify-center h-full flex-col bg-stone-800 text-white">
+          <header>
+            <h1 className="text-4xl font-bold">The Game of Grow</h1>
+          </header>
+          <main className="flex flex-col gap-3">
+            <EndTurnButton
+              onEndTurn={ () => playMove(socket, 'end') }
               isCurrentPlayersTurn={ isCurrentPlayersTurn }
               playerHasPlaced={ gameState.playerHasPlaced }
-              onMoveStone={ (toX, toY, fromX, fromY) => playMove(socket, 'move', toX, toY, fromX, fromY) }
-              onPlaceStone={ (x, y) => playMove(socket, 'place', x, y) }
             />
-            <aside className='flex flex-col gap-3'>
-              <Scoreboard
+            <div className="flex flex-col md:flex-row gap-3">
+              <BoardDisplay
+                board={ gameState.board }
                 players={ gameState.players }
                 currentPlayer={ gameState.currentPlayer }
-                scores={ gameState.scores }
+                isCurrentPlayersTurn={ isCurrentPlayersTurn }
+                playerHasPlaced={ gameState.playerHasPlaced }
+                onMoveStone={ (toX, toY, fromX, fromY) => playMove(socket, 'move', toX, toY, fromX, fromY) }
+                onPlaceStone={ (x, y) => playMove(socket, 'place', x, y) }
               />
-            </aside>
-          </div>
-        </main>
-      </div>
+              <aside className='flex flex-col gap-3'>
+                <Scoreboard
+                  players={ gameState.players }
+                  currentPlayer={ gameState.currentPlayer }
+                  scores={ gameState.scores }
+                />
+              </aside>
+            </div>
+          </main>
+        </div>
+      </SoundContext.Provider>
     </>
   )
 }

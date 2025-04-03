@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Board, Coordinate } from '../../../types/game';
 import { getTargetStones } from '../possibleTargets';
 import { GhostStone, GrowthTarget, StoneStackDisplay } from './StoneStackDisplay';
 import { BoardGrid } from './boardParts/BoardGrid';
 import { GlowFilters } from './boardParts/GlowFilters';
+import { SoundContext } from '../sfx';
 
 export const sizes = {
   pitch: 50,
@@ -12,7 +13,6 @@ export const sizes = {
 };
 
 function getBoardSpace(target: SVGSVGElement, mouseX: number, mouseY: number) {
-  console.log(target)
   return {
     x: Math.round((mouseX * (800 / target.clientWidth) - sizes.padding) / sizes.pitch),
     y: Math.round((mouseY * (800 / target.clientWidth) - sizes.padding) / sizes.pitch),
@@ -41,6 +41,8 @@ export function BoardDisplay({
   const [ hoveredSpace, setHoveredSpace ] = useState(null as Coordinate | null);
   const [ selectedSpace, setSelectedSpace ] = useState(null as Coordinate | null);
 
+  const sounds = useContext(SoundContext);
+
   const boardHeight = board[0].length;
   const boardWidth = board.length;
 
@@ -55,11 +57,13 @@ export function BoardDisplay({
     board[hoveredSpace.x][hoveredSpace.y] === null // hovered space is empty?
   );
 
-  const possibleTargets = selectedSpace && getTargetStones(selectedSpace.x, selectedSpace.y, board, currentPlayer);
+  const possibleTargets = (
+    selectedSpace && (isCurrentPlayersTurn || null) &&
+    getTargetStones(selectedSpace.x, selectedSpace.y, board, currentPlayer)
+  );
 
   function onMouseMove(event: React.MouseEvent<SVGSVGElement, MouseEvent>) {
     const newHoveredSpace = getBoardSpace(event.currentTarget, event.nativeEvent.offsetX, event.nativeEvent.offsetY);
-    console.log(newHoveredSpace)
     if (hoveredSpace === null || newHoveredSpace.x !== hoveredSpace.x || newHoveredSpace.y !== hoveredSpace.y) {
       setHoveredSpace(newHoveredSpace);
     }
@@ -95,7 +99,12 @@ export function BoardDisplay({
             ghost={ false }
             isSelected={ Boolean(selectedSpace) && selectedSpace?.x === stack.x && selectedSpace?.y === stack.y }
             isPossibleTarget={ possibleTargets === null ? false : `${stack.x},${stack.y}` in possibleTargets!.possibleHighwayTargets}
-            onSelect={ () => setSelectedSpace({x: stack.x, y: stack.y}) }
+            onSelect={ () => {
+              if (isCurrentPlayersTurn) {
+                setSelectedSpace({x: stack.x, y: stack.y});
+                sounds?.playBtnDown();
+              }
+            } }
             onDeselect={ () => setSelectedSpace(null) }
             onTarget={ () => {
               onMoveStone(stack.x, stack.y, selectedSpace!.x, selectedSpace!.y);

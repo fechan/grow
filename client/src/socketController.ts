@@ -12,6 +12,8 @@ export function wsListen(
   setLobbyInfo: Dispatch<LobbyInfo>,
   gameState: GameState,
   setGameState: Dispatch<GameState>,
+  playerName: string,
+  sounds: any,
 ) {
   const eventHandlers = {
     'connect': () => setIsConnected(true),
@@ -24,6 +26,17 @@ export function wsListen(
       setLobbyInfo(params.lobbyInfo);
     },
     'gameStateChanged': (params: GameStateChangedMessage) => {
+      // do sounds
+      const currentPlayerChanged = gameState.currentPlayer !== params.gameState.currentPlayer;
+      if (currentPlayerChanged) {
+        if (params.gameState.currentPlayer === playerName) {
+          sounds.playDing();
+        }
+      } else {
+        sounds.playBtnUp();
+      }
+
+      // update board
       if ('board' in params.gameState) {
         setMenu(null);
         setGameState(params.gameState as GameState);
