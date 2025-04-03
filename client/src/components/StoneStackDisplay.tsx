@@ -1,5 +1,4 @@
-import { Dispatch } from "react";
-import { Coordinate, StoneStack } from "../../../types/game";
+import { StoneStack } from "../../../types/game";
 import { sizes } from "./BoardDisplay";
 
 const colors = [
