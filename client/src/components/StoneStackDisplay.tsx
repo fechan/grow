@@ -41,7 +41,10 @@ export function StoneStackDisplay({ stack, players, ghost, isSelected, isPossibl
   }
 
   return (
-    <g className="cursor-pointer" onClick={ onClick }>
+    <g
+      className={ ghost || isPossibleTarget || stack.movable ? "cursor-pointer" : "cursor-default" }
+      onClick={ onClick }
+    >
       <circle
         cx={ stack.x * sizes.pitch + sizes.padding }
         cy={ stack.y * sizes.pitch + sizes.padding }
