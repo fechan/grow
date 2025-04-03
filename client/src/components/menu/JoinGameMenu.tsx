@@ -19,7 +19,7 @@ export function JoinGameMenu({ onClickJoinGame, onClickBack }: JoinGameMenuProps
         <input
           type="text"
           name="nickname"
-          className="border rounded"
+          className="border rounded p-1"
           value={ nickname }
           onChange={ e => setNickname(e.target.value) }
         />
@@ -30,14 +30,19 @@ export function JoinGameMenu({ onClickJoinGame, onClickBack }: JoinGameMenuProps
         <input
           type="text"
           name="lobby-code"
-          className="border rounded"
+          className="border rounded p-1"
           value={ lobbyCode }
           onChange={ e => setLobbyCode(e.target.value) }
         />
       </div>
 
-      <FancyButton onClick={ () => onClickJoinGame(lobbyCode, nickname) }>Join game</FancyButton>
-      <FancyButton onClick={ onClickBack }>Back</FancyButton>
+      <FancyButton
+        onClick={ () => onClickJoinGame(lobbyCode, nickname) }
+        disabled={ nickname.length === 0 || lobbyCode.length === 0 }
+      >
+        Join game
+      </FancyButton>
+      <FancyButton className="btn-back" onClick={ onClickBack }>Back</FancyButton>
     </div>
   );
 }

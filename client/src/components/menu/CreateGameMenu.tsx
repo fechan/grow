@@ -17,13 +17,18 @@ export function CreateGameMenu({ onClickCreateGame, onClickBack }: CreateGameMen
         <input
           type="text"
           name="nickname"
-          className="border rounded"
+          className="border rounded p-1"
           value={ nickname }
           onChange={ e => setNickname(e.target.value) }
         />
       </div>
-      <FancyButton onClick={ () => onClickCreateGame(nickname) }>Create game</FancyButton>
-      <FancyButton onClick={ onClickBack }>Back</FancyButton>
+      <FancyButton
+        onClick={ () => onClickCreateGame(nickname) }
+        disabled={ nickname.length === 0 }
+      >
+        Create game
+      </FancyButton>
+      <FancyButton className="btn-back" onClick={ onClickBack }>Back</FancyButton>
     </div>
   );
 }
