@@ -25,7 +25,7 @@ import { SoundContext, useSounds } from './sfx';
 
 const PLACEHOLDER_GAME_STATE = {
   board: [],
-  players: ["Red", "Green", "Blue", "Yellow"],
+  players: ["Alice", "Bob", "Carol", "Dave"],
   currentPlayer: "Player",
   playerHasPlaced: true,
   gameIsOver: true,
