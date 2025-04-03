@@ -9,8 +9,9 @@ interface CreateGameMenuProps {
 export function CreateGameMenu({ onClickCreateGame, onClickBack }: CreateGameMenuProps) {
   const [nickname, setNickname] = useState('');
   return (
-    <div className="flex flex-col gap-3 text-center">
-      <h1>Create game</h1>
+    <div className="flex flex-col gap-3 text-center w-80">
+      <h1 className="text-3xl font-bold text-center">Create game</h1>
+
       <div className="flex flex-col">
         <label htmlFor="nickname">Your nickname</label>
         <input

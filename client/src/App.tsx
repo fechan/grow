@@ -102,8 +102,11 @@ function App() {
           </Modal>
         }
         <div className="flex items-center justify-center h-full flex-col bg-stone-800 text-white">
-          <header>
+          <header className="text-center mb-5">
             <h1 className="text-4xl font-bold">The Game of Grow</h1>
+            <p>
+              Created by <a href="https://fredchan.org" className="text-green-400 hover:text-green-300 hover:underline">Frederick Chan</a>
+            </p>
           </header>
           <main className="flex flex-col gap-3">
             <EndTurnButton

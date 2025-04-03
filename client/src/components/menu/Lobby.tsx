@@ -10,13 +10,14 @@ interface LobbyProps {
 
 export function Lobby({ lobbyInfo, currentPlayer, onClickStartGame, onClickBack }: LobbyProps) {
   return (
-    <div className="flex flex-col gap-3 text-center">
-      <h1>Lobby</h1>
+    <div className="flex flex-col gap-3 text-center w-80">
+      <h1 className="text-3xl font-bold text-center">Lobby</h1>
+
       <p>Lobby code: { lobbyInfo.lobbyCode }</p>
       <ul>
         {
           lobbyInfo.players.map(player => (
-            <li>
+            <li key={ player }>
               { player }
 
               { player === currentPlayer &&
