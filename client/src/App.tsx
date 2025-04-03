@@ -23,20 +23,28 @@ import { createLobby, joinLobby, leave, playMove, startGame, wsListen } from './
 import { EndTurnButton } from './components/EndTurnButton';
 import { SoundContext, useSounds } from './sfx';
 
+const PLACEHOLDER_GAME_STATE = {
+  board: [],
+  players: ["Red", "Green", "Blue", "Yellow"],
+  currentPlayer: "Player",
+  playerHasPlaced: true,
+  gameIsOver: true,
+  scores: {}
+} as GameState;
+for (let x=0; x < 15; x++) {
+  PLACEHOLDER_GAME_STATE.board[x] = [];
+  for (let y=0; y < 15; y++) {
+    PLACEHOLDER_GAME_STATE.board[x][y] = null;
+  }
+}
+
 function App() {
   const [isConnected, setIsConnected] = useState(socket.connected);
   const sounds = useSounds();
 
   const [ lobbyInfo, setLobbyInfo ] = useState(null as LobbyInfo | null);
   const [ playerName, setPlayerName ] = useState('Player');
-  const [ gameState, setGameState ] = useState({
-    board: [[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,{"player":"Player","heads":1,"movable":0,"x":4,"y":1},{"player":"Player","heads":1,"movable":0,"x":4,"y":2},null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,{"player":"Player","heads":1,"movable":1,"x":6,"y":3},null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null]],
-    players: ["Player", "b"],
-    currentPlayer: "Player",
-    playerHasPlaced: true,
-    gameIsOver: true,
-    scores: {"Player": 5, "b": 10}
-  } as GameState);
+  const [ gameState, setGameState ] = useState(PLACEHOLDER_GAME_STATE);
   const isCurrentPlayersTurn = playerName === gameState.currentPlayer;
 
   const [ menu, setMenu ] = useState('main' as keyof typeof menus | null);

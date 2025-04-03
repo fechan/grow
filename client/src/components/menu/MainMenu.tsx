@@ -15,7 +15,7 @@ export function MainMenu({ onClickJoinGame, onClickCreateGame, onClickHowToPlay 
       <FancyButton onClick={ onClickHowToPlay }>How to play</FancyButton>
       <small>
         <p>Grow was invented and programmed by <a href="https://fredchan.org" className="text-green-400 hover:text-green-300 hover:underline">Frederick Chan</a></p>
-        <p>The source code is available on <a className="text-green-400 hover:text-green-300 hover:underline" href="https://github.com/fechan/grow-app">Github</a>.</p>
+        <p>Source code on <a className="text-green-400 hover:text-green-300 hover:underline" href="https://github.com/fechan/grow-app">Github</a></p>
       </small>
     </div>
   );
