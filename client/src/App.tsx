@@ -20,6 +20,7 @@ import { HowToPlay } from './components/menu/HowToPlay';
 import { Modal } from './components/Modal';
 import { Scoreboard } from './components/Scoreboard';
 import { createLobby, joinLobby, playMove, startGame, wsListen } from './socketController';
+import { EndTurnButton } from './components/EndTurnButton';
 
 function App() {
   const [isConnected, setIsConnected] = useState(socket.connected);
@@ -36,7 +37,7 @@ function App() {
   } as GameState);
   const isCurrentPlayersTurn = playerName === gameState.currentPlayer;
 
-  const [ menu, setMenu ] = useState('main' as string | null);
+  const [ menu, setMenu ] = useState('main' as keyof typeof menus | null);
   const menus = {
     'main': <MainMenu
       onClickCreateGame={ () => setMenu('create') }
@@ -85,13 +86,18 @@ function App() {
         </header>
         <div className="flex gap-5">
           <main>
+            <EndTurnButton
+              onEndTurn={ () => playMove(socket, 'end') }
+              isCurrentPlayersTurn={ isCurrentPlayersTurn }
+              playerHasPlaced={ gameState.playerHasPlaced }
+            />
             <BoardDisplay
               board={ gameState.board }
               players={ gameState.players }
               currentPlayer={ gameState.currentPlayer }
               isCurrentPlayersTurn={ isCurrentPlayersTurn }
               playerHasPlaced={ gameState.playerHasPlaced }
-              onMoveStone={ (toX, toY, fromX, fromY) => playMove(socket, 'place', toX, toY, fromX, fromY) }
+              onMoveStone={ (toX, toY, fromX, fromY) => playMove(socket, 'move', toX, toY, fromX, fromY) }
               onPlaceStone={ (x, y) => playMove(socket, 'place', x, y) }
             />
           </main>

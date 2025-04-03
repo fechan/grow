@@ -13,14 +13,14 @@ export function Scoreboard({ players, scores, currentPlayer }: ScoreboardProps) 
         players.map(player => (
           <section
             key={ player }
-            className={ "border rounded p-3 text-center" + (player === currentPlayer ? " bg-yellow-500/30 " : "") }
+            className={ "border rounded p-3 text-center w-50" + (player === currentPlayer ? " bg-yellow-500/30 " : "") }
           >
             <h1 className="font-bold">
               { player }
               &nbsp;
               ({ ['red', 'blue', 'green', 'yellow'][players.indexOf(player)] })
             </h1>
-            <p>Score: { scores[player] }</p>
+            <p>Score: { scores[player] || 0 }</p>
           </section>
         ))
       }

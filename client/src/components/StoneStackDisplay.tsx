@@ -27,7 +27,7 @@ export function StoneStackDisplay({ stack, players, ghost, isSelected, isPossibl
   function onClick(event: React.MouseEvent) {
     event.stopPropagation();
 
-    if (isSelected) {
+    if (isSelected || (!(ghost || isPossibleTarget) && stack.movable === 0)) {
       onDeselect();
     } else if (isPossibleTarget) {
       onTarget();
@@ -36,10 +36,9 @@ export function StoneStackDisplay({ stack, players, ghost, isSelected, isPossibl
     }
   }
 
-  // TODO: add styles for movable stones while no selection is happening
   function getFilter() {
     if (isSelected) return 'url(#back-glow-color)';
-    if (isPossibleTarget) return 'url(#back-glow)';
+    if (isPossibleTarget || stack.movable > 0) return 'url(#back-glow)';
   }
 
   return (
@@ -52,17 +51,17 @@ export function StoneStackDisplay({ stack, players, ghost, isSelected, isPossibl
           { filter: getFilter() }
         }
         className={
-          'stroke-2 ' +
+          'stroke-2 stroke-black ' +
           color + ' ' +
           (ghost ? 'opacity-50': 'opacity-100') + ' ' +
-          (isPossibleTarget ? 'stroke-white' : '') + ' ' +
+          (isPossibleTarget || stack.movable ? 'stroke-white' : '') + ' ' +
           (isSelected ? '!stroke-lime-400' : '') + ' '
         }
       />
       { stack.heads > 1 &&
         <text
           x={ stack.x * sizes.pitch + sizes.padding }
-          y={ stack.y * sizes.pitch + sizes.padding }
+          y={ stack.y * sizes.pitch + sizes.padding + 2 }
           className="align-baseline center fill-white stroke-white text-2xl"
           style={{
             textAnchor: 'middle',

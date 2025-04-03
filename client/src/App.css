@@ -1,1 +1,67 @@
 @import "tailwindcss";
+
+button:enabled {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: default;
+}
+
+.btn {
+  --borderHeight: .2rem;
+  --boxShadow: 0 0 .8rem transparent,0 0 1.6rem transparent,inset 0 -.8rem 2.4rem transparent,inset 0 calc(var(--borderHeight, .1rem)*-1) 0 0 rgba(0,0,0,.2);
+  --btnPadding: .25rem;
+
+  color: white;
+  border: 0;
+  border-radius: .3rem;
+  font-weight: 600;
+
+  transition: box-shadow .05s, padding-bottom .05s, margin-top .05s, background-color .2s;
+
+  box-shadow: var(--boxShadow);
+
+  padding: var(--btnPadding);
+  padding-bottom: calc(var(--borderHeight) + var(--btnPadding));
+  
+  background-color: hsl(143, 100%, 38%);
+}
+
+.btn:hover:enabled {
+  background-color: hsl(143, 100%, 45%);
+}
+
+.btn:active:enabled {
+  box-shadow: none;
+  padding-bottom: .3rem;
+  margin-top: .15rem;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+}
+
+.btn-lg {
+  --borderHeight: .5rem;
+  --btnPadding: 1rem;
+
+  width: 100%;
+  font-size: large;
+
+  padding: var(--btnPadding);
+  padding-bottom: calc(var(--borderHeight) + var(--btnPadding));
+}
+
+.btn-lg:active:enabled {
+  padding-bottom: 1.2rem;
+  margin-top: .3rem;
+}
+
+.btn-danger, .btn-back {
+  background-color: hsl(0, 100%, 45%);
+}
+
+.btn-danger:hover:enabled, .btn-back:hover:enabled {
+  background-color: hsl(0, 100%, 52%);
+}

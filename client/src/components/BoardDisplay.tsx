@@ -70,59 +70,62 @@ export function BoardDisplay({
   }
 
   return (
-    <>
-      <p>Placed? { playerHasPlaced.toString() }</p>
-      <svg
-        width="800"
-        height="800"
-        style={{
-          backgroundColor: '#e0bb6c',
-        }}
-        onMouseMove={ onMouseMove }
-        onClick={ onClick }
-      >
-        <defs>
-          <GlowFilters />
-        </defs>
-        <BoardGrid boardHeight={ boardHeight } boardWidth={ boardWidth } />
+    <svg
+      width="800"
+      height="800"
+      style={{
+        backgroundColor: '#e0bb6c',
+      }}
+      onMouseMove={ onMouseMove }
+      onClick={ onClick }
+    >
+      <defs>
+        <GlowFilters />
+      </defs>
+      <BoardGrid boardHeight={ boardHeight } boardWidth={ boardWidth } />
 
-        {
-          board.flat().map(stack => stack &&
-            <StoneStackDisplay
-              key={ `stone-stack-${stack.x}-${stack.y}` }
-              stack={ stack }
-              players={ players }
-              ghost={ false }
-              isSelected={ Boolean(selectedSpace) && selectedSpace?.x === stack.x && selectedSpace?.y === stack.y }
-              isPossibleTarget={ possibleTargets === null ? false : `${stack.x},${stack.y}` in possibleTargets!.possibleHighwayTargets}
-              onSelect={ () => setSelectedSpace({x: stack.x, y: stack.y}) }
-              onDeselect={ () => setSelectedSpace(null) }
-              onTarget={ () => onMoveStone(stack.x, stack.y, selectedSpace!.x, selectedSpace!.y) }
-            />
-          )
-        }
-        
-        { showGhostStone &&
-          <GhostStone
-            x={ hoveredSpace.x! }
-            y={ hoveredSpace.y! }
-            currentPlayer={ currentPlayer }
+      {
+        board.flat().map(stack => stack &&
+          <StoneStackDisplay
+            key={ `stone-stack-${stack.x}-${stack.y}` }
+            stack={ stack }
             players={ players }
-            onPlace={ () => onPlaceStone(hoveredSpace.x, hoveredSpace.y) }
+            ghost={ false }
+            isSelected={ Boolean(selectedSpace) && selectedSpace?.x === stack.x && selectedSpace?.y === stack.y }
+            isPossibleTarget={ possibleTargets === null ? false : `${stack.x},${stack.y}` in possibleTargets!.possibleHighwayTargets}
+            onSelect={ () => setSelectedSpace({x: stack.x, y: stack.y}) }
+            onDeselect={ () => setSelectedSpace(null) }
+            onTarget={ () => {
+              onMoveStone(stack.x, stack.y, selectedSpace!.x, selectedSpace!.y);
+              setSelectedSpace(null);
+            } }
           />
-        }
+        )
+      }
+      
+      { showGhostStone &&
+        <GhostStone
+          x={ hoveredSpace.x! }
+          y={ hoveredSpace.y! }
+          currentPlayer={ currentPlayer }
+          players={ players }
+          onPlace={ () => onPlaceStone(hoveredSpace.x, hoveredSpace.y) }
+        />
+      }
 
-        { possibleTargets?.possibleGrowthTargets &&
-          possibleTargets.possibleGrowthTargets.map(space => (
-            <GrowthTarget
-              key={ `growth-target-${space.x}-${space.y}` }
-              x={ space.x }
-              y={ space.y }
-              onTarget={ () => onMoveStone(space.x, space.y, selectedSpace!.x, selectedSpace!.y) }
-            />
-          ))
-        }
-      </svg>
-    </>
+      { possibleTargets?.possibleGrowthTargets &&
+        possibleTargets.possibleGrowthTargets.map(space => (
+          <GrowthTarget
+            key={ `growth-target-${space.x}-${space.y}` }
+            x={ space.x }
+            y={ space.y }
+            onTarget={ () => {
+              onMoveStone(space.x, space.y, selectedSpace!.x, selectedSpace!.y);
+              setSelectedSpace(null);
+            }}
+          />
+        ))
+      }
+    </svg>
   );
 }
