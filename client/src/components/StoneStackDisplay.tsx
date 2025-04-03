@@ -3,10 +3,10 @@ import { Coordinate, StoneStack } from "../../../types/game";
 import { sizes } from "./BoardDisplay";
 
 const colors = [
-  { head: 'fill-red-600', tail: 'fill-red-800' },
-  { head: 'fill-blue-600', tail: 'fill-blue-800' },
-  { head: 'fill-green-600', tail: 'fill-green-800' },
-  { head: 'fill-yellow-600', tail: 'fill-yellow-800' },
+  { head: 'fill-red-600', tail: 'fill-red-900' },
+  { head: 'fill-blue-600', tail: 'fill-blue-900' },
+  { head: 'fill-green-600', tail: 'fill-green-900' },
+  { head: 'fill-yellow-600', tail: 'fill-yellow-900' },
 ];
 
 interface StoneStackDisplayProps {
