@@ -90,13 +90,13 @@ function App() {
         <header>
           <h1 className="text-4xl font-bold">The Game of Grow</h1>
         </header>
-        <div className="flex gap-5">
-          <main>
-            <EndTurnButton
-              onEndTurn={ () => playMove(socket, 'end') }
-              isCurrentPlayersTurn={ isCurrentPlayersTurn }
-              playerHasPlaced={ gameState.playerHasPlaced }
-            />
+        <main className="flex flex-col gap-3">
+          <EndTurnButton
+            onEndTurn={ () => playMove(socket, 'end') }
+            isCurrentPlayersTurn={ isCurrentPlayersTurn }
+            playerHasPlaced={ gameState.playerHasPlaced }
+          />
+          <div className="flex flex-col md:flex-row gap-3">
             <BoardDisplay
               board={ gameState.board }
               players={ gameState.players }
@@ -106,15 +106,15 @@ function App() {
               onMoveStone={ (toX, toY, fromX, fromY) => playMove(socket, 'move', toX, toY, fromX, fromY) }
               onPlaceStone={ (x, y) => playMove(socket, 'place', x, y) }
             />
-          </main>
-          <aside className='flex flex-col gap-3'>
-            <Scoreboard
-              players={ gameState.players }
-              currentPlayer={ gameState.currentPlayer }
-              scores={ gameState.scores }
-            />
-          </aside>
-        </div>
+            <aside className='flex flex-col gap-3'>
+              <Scoreboard
+                players={ gameState.players }
+                currentPlayer={ gameState.currentPlayer }
+                scores={ gameState.scores }
+              />
+            </aside>
+          </div>
+        </main>
       </div>
     </>
   )

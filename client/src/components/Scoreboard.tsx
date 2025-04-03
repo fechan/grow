@@ -13,7 +13,10 @@ export function Scoreboard({ players, scores, currentPlayer }: ScoreboardProps) 
         players.map(player => (
           <section
             key={ player }
-            className={ "border rounded p-3 text-center w-50" + (player === currentPlayer ? " bg-yellow-500/30 " : "") }
+            className={
+              "border rounded p-3 text-center w-full md:w-50" +
+              ( player === currentPlayer ? " bg-yellow-500/30 " : "" )
+            }
           >
             <h1 className="font-bold">
               { player }

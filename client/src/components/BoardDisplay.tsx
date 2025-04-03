@@ -11,10 +11,11 @@ export const sizes = {
   stoneRadius: 50 / 2 - 2,
 };
 
-function getBoardSpace(mouseX: number, mouseY: number) {
+function getBoardSpace(target: SVGSVGElement, mouseX: number, mouseY: number) {
+  console.log(target)
   return {
-    x: Math.round((mouseX - sizes.padding) / sizes.pitch),
-    y: Math.round((mouseY - sizes.padding) / sizes.pitch),
+    x: Math.round((mouseX * (800 / target.clientWidth) - sizes.padding) / sizes.pitch),
+    y: Math.round((mouseY * (800 / target.clientWidth) - sizes.padding) / sizes.pitch),
   } as Coordinate;
 }
 
@@ -57,7 +58,8 @@ export function BoardDisplay({
   const possibleTargets = selectedSpace && getTargetStones(selectedSpace.x, selectedSpace.y, board, currentPlayer);
 
   function onMouseMove(event: React.MouseEvent<SVGSVGElement, MouseEvent>) {
-    const newHoveredSpace = getBoardSpace(event.nativeEvent.offsetX, event.nativeEvent.offsetY);
+    const newHoveredSpace = getBoardSpace(event.currentTarget, event.nativeEvent.offsetX, event.nativeEvent.offsetY);
+    console.log(newHoveredSpace)
     if (hoveredSpace === null || newHoveredSpace.x !== hoveredSpace.x || newHoveredSpace.y !== hoveredSpace.y) {
       setHoveredSpace(newHoveredSpace);
     }
@@ -71,8 +73,8 @@ export function BoardDisplay({
 
   return (
     <svg
-      width="800"
-      height="800"
+      className='w-85 md:w-120 lg:w-200'
+      viewBox='0 0 800 800'
       style={{
         backgroundColor: '#e0bb6c',
       }}
