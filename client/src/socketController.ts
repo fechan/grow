@@ -77,6 +77,10 @@ export function startGame(socket: Socket) {
   socket.emit("startGame");
 }
 
+export function leave(socket: Socket) {
+  socket.emit("leave");
+}
+
 export function playMove(
   socket: Socket,
   type: MoveName,

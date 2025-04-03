@@ -19,7 +19,7 @@ import { Lobby } from './components/menu/Lobby';
 import { HowToPlay } from './components/menu/HowToPlay';
 import { Modal } from './components/Modal';
 import { Scoreboard } from './components/Scoreboard';
-import { createLobby, joinLobby, playMove, startGame, wsListen } from './socketController';
+import { createLobby, joinLobby, leave, playMove, startGame, wsListen } from './socketController';
 import { EndTurnButton } from './components/EndTurnButton';
 import { SoundContext, useSounds } from './sfx';
 
@@ -64,7 +64,10 @@ function App() {
       lobbyInfo={ lobbyInfo! }
       currentPlayer={ playerName }
       onClickStartGame={ () => startGame(socket) }
-      onClickBack={ () => setMenu('main') }
+      onClickBack={ () => {
+        setMenu('main');
+        leave(socket);
+      }}
     />,
     'howToPlay': <HowToPlay
       onClickBack={ () => setMenu('main') }
