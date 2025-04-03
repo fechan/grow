@@ -45,11 +45,17 @@ function App() {
       onClickHowToPlay={ () => setMenu('howToPlay') }
     />,
     'create': <CreateGameMenu
-      onClickCreateGame={ (playerName) => { createLobby(socket, playerName); setPlayerName(playerName); } }
+      onClickCreateGame={ (playerName) => {
+        createLobby(socket, playerName);
+        setPlayerName(playerName);
+      } }
       onClickBack={ () => setMenu('main') }
     />,
     'join': <JoinGameMenu
-      onClickJoinGame={ (lobby, playerName) => joinLobby(socket, lobby, playerName) }
+      onClickJoinGame={ (lobby, playerName) => {
+        joinLobby(socket, lobby, playerName);
+        setPlayerName(playerName);
+      } }
       onClickBack={ () => setMenu('main') }
     />,
     'lobby': <Lobby
