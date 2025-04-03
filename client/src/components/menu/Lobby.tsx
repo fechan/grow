@@ -34,7 +34,9 @@ export function Lobby({ lobbyInfo, currentPlayer, onClickStartGame, onClickBack 
           ))
         }
       </ul>
-      <FancyButton onClick={ onClickStartGame }>Start game</FancyButton>
+      { currentPlayer === lobbyInfo.host &&
+        <FancyButton onClick={ onClickStartGame }>Start game</FancyButton>
+      }
       <FancyButton onClick={ onClickBack }>Quit to main menu</FancyButton>
     </div>
   );
