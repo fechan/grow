@@ -7,7 +7,7 @@ const { Server } = require("socket.io");
 
 const io = new Server(server, {
   cors: {
-    origin: ['"https://fredchan.org"', '"https://frederick.seattle.wa.us"']
+    origin: ['https://fredchan.org', 'https://frederick.seattle.wa.us']
   }
 });
 
