@@ -11,7 +11,7 @@ const port = process.env.PORT || 5000;
 const GameController = require("./gameController");
 new GameController(io);
 
-app.use("/", express.static("./client/"));
+// app.use("/", express.static("./client/"));
 
 app.get("/up", (req, res) => {
   res.send("Grow server is up and running!");

@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 button:enabled {
   cursor: pointer;
 }
@@ -23,11 +25,11 @@ button:disabled {
   padding: var(--btnPadding);
   padding-bottom: calc(var(--borderHeight) + var(--btnPadding));
   
-  background-color: hsl(143, 100%, 38%);
+  background-color: hsl(143, 100%, 33%);
 }
 
 .btn:hover:enabled {
-  background-color: hsl(143, 100%, 45%);
+  background-color: hsl(143, 100%, 40%);
 }
 
 .btn:active:enabled {
@@ -57,7 +59,7 @@ button:disabled {
 }
 
 .btn-danger, .btn-back {
-  background-color: hsl(0, 100%, 45%);
+  background-color: hsl(0, 100%, 38%);
 }
 
 .btn-danger:hover:enabled, .btn-back:hover:enabled {
