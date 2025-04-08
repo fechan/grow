@@ -4,7 +4,12 @@ const app = express();
 const http = require("http");
 const server = http.createServer(app);
 const { Server } = require("socket.io");
-const io = new Server(server);
+
+const io = new Server(server, {
+  cors: {
+    origin: ['"https://fredchan.org"', '"https://frederick.seattle.wa.us"']
+  }
+});
 
 const port = process.env.PORT || 5000;
 
