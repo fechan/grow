@@ -1,4 +1,4 @@
-FROM node:20-alpine
+FROM node:25-alpine
 COPY . /usr/src/grow
 WORKDIR /usr/src/grow
 RUN npm i
